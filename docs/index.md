@@ -30,10 +30,8 @@ The application starts at: `http://localhost:3000`
 | Document | Description |
 |----------|-------------|
 | [Architecture](architecture.md) | Application design and component structure |
-| [Components](components.md) | UI components and design system |
-| [API Integration](api-integration.md) | Service communication patterns |
-| [Authentication](authentication.md) | Auth0 integration and security |
-| [Deployment](deployment.md) | Production deployment guide |
+| [API Reference](api-reference.md) | BFF endpoints and service API clients |
+| [Setup](setup.md) | Local development setup |
 
 ## How It Fits in ConFuse
 
@@ -47,9 +45,9 @@ graph TD
     
     %% Backend Services
     AM[Auth-Middleware<br/>Port: 3010<br/>Auth0 Service]
-    DC[Data-Connector<br/>Port: 3030<br/>Source Integration]
+    DC[Data-Connector<br/>Port: 8081<br/>Source Integration]
     CC[Client-Connector<br/>Port: 3020<br/>MCP Gateway]
-    DV[Data-Vent<br/>Port: 3040<br/>Export Service]
+    DV[Data-Vent<br/>Port: 3002<br/>Retrieval Service]
     FT[Feature-Toggle<br/>Port: 3099<br/>Feature Flags]
     
     %% User Connections

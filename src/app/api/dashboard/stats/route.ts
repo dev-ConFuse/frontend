@@ -4,9 +4,9 @@ import { NextRequest, NextResponse } from 'next/server'
 
 const SVC = {
   auth:    process.env.AUTH_SERVICE_URL        || 'http://localhost:3010',
-  repo:    process.env.REPO_DATA_CON_URL       || 'http://localhost:3031',
-  doc:     process.env.DOC_DATA_CON_URL        || 'http://localhost:3030',
-  logProc: process.env.LOG_UNI_PROC_URL        || 'http://localhost:8095',
+  repo:    process.env.REPO_DATA_CON_URL       || 'http://localhost:8081',
+  doc:     process.env.DOC_DATA_CON_URL        || 'http://localhost:8081',
+  logProc: process.env.LOG_UNI_PROC_URL        || 'http://localhost:8090',
 };
 
 async function safeFetch(url: string, headers: Record<string, string>, timeoutMs = 1500) {
