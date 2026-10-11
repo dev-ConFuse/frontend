@@ -49,7 +49,7 @@ EXPOSE 3000
 # PORT/HOSTNAME are supplied at runtime via .map.env / .secret.env
 # (see .cline/rules/env-policy.md)
 
-# Health check optimized for Render
+# Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD curl -f http://localhost:${PORT}/ || exit 1
 

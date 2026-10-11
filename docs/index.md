@@ -174,11 +174,11 @@ src/
 ```typescript
 // API client configuration
 const apiClient = {
-  authMiddleware: createApiClient('https://auth-middleware-fcg0.onrender.com'),
-  docDataCon: createApiClient('https://doc-data-con.onrender.com'),
-  repoDataCon: createApiClient('https://repo-data-con.onrender.com'),
+  authMiddleware: createApiClient('https://auth.confuse.site'),
+  docDataCon: createApiClient('https://dcn.confuse.site'),
+  repoDataCon: createApiClient('https://rcn.confuse.site'),
   clientConnector: createApiClient('https://cln.confuse.site'),
-  dataVent: createApiClient('https://data-vent.onrender.com'),
+  dataVent: createApiClient('http://localhost:3002'),
   featureToggle: createApiClient('http://localhost:3099')
 }
 
@@ -381,11 +381,11 @@ NEXT_PUBLIC_AUTH0_AUDIENCE=https://api.confuse.dev
 
 # Service URLs
 NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
-NEXT_PUBLIC_AUTH_MIDDLEWARE_URL=https://auth-middleware-fcg0.onrender.com
-NEXT_PUBLIC_DOC_DATA_CON_URL=https://doc-data-con.onrender.com
-NEXT_PUBLIC_REPO_DATA_CON_URL=https://repo-data-con.onrender.com
+NEXT_PUBLIC_AUTH_MIDDLEWARE_URL=https://auth.confuse.site
+NEXT_PUBLIC_DOC_DATA_CON_URL=https://dcn.confuse.site
+NEXT_PUBLIC_REPO_DATA_CON_URL=https://rcn.confuse.site
 NEXT_PUBLIC_CLIENT_CONNECTOR_URL=https://cln.confuse.site
-NEXT_PUBLIC_DATA_VENT_URL=https://data-vent.onrender.com
+NEXT_PUBLIC_DATA_VENT_URL=http://localhost:3002
 NEXT_PUBLIC_FEATURE_TOGGLE_URL=http://localhost:3099
 
 # Application Configuration
