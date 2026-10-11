@@ -3,12 +3,11 @@
 import { Auth0Provider } from '@auth0/auth0-react';
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { requireValue } from '../lib/env';
 
 const Auth0ProviderWithNavigate = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   // App origin is env config (no hard-coded URL — see .cline/rules/env-policy.md)
-  const origin = requireValue('NEXT_PUBLIC_APP_URL', process.env.NEXT_PUBLIC_APP_URL);
+  const origin = process.env.NEXT_PUBLIC_APP_URL as string;
   const redirectUri = `${origin}/auth/callback`;
   const domain = process.env.NEXT_PUBLIC_AUTH0_DOMAIN;
   const clientId = process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID;

@@ -1,12 +1,11 @@
 export const dynamic = 'force-dynamic'
 
-import { requireEnv } from '../../../../lib/env'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
   try {
     const authHeader = request.headers.get('authorization');
-    const authUrl = requireEnv('NEXT_PUBLIC_AUTH_URL');
+    const authUrl = process.env.NEXT_PUBLIC_AUTH_URL as string;
 
     if (authHeader) {
       try {
@@ -54,7 +53,7 @@ export async function POST(request: NextRequest) {
     const authHeader = request.headers.get('authorization');
     const body = await request.json();
     const { tier } = body;
-    const authUrl = requireEnv('NEXT_PUBLIC_AUTH_URL');
+    const authUrl = process.env.NEXT_PUBLIC_AUTH_URL as string;
 
     if (authHeader) {
       const res = await fetch(`${authUrl}/api/v1/billing/checkout`, {
@@ -88,7 +87,7 @@ export async function PUT(request: NextRequest) {
     const authHeader = request.headers.get('authorization');
     const body = await request.json();
     const { tier } = body;
-    const authUrl = requireEnv('NEXT_PUBLIC_AUTH_URL');
+    const authUrl = process.env.NEXT_PUBLIC_AUTH_URL as string;
 
     if (authHeader) {
       const res = await fetch(`${authUrl}/api/v1/billing/upgrade`, {

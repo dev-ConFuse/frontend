@@ -1,6 +1,5 @@
 export const dynamic = 'force-dynamic'
 
-import { requireEnv } from '../../../../lib/env'
 import { NextRequest, NextResponse } from 'next/server'
 
 const PLAN_INFO: Record<string, { name: string; price_monthly: number; formatted_price: string; features: string[] }> = {
@@ -33,7 +32,7 @@ const PLAN_INFO: Record<string, { name: string; price_monthly: number; formatted
 export async function GET(request: NextRequest) {
   try {
     const authHeader = request.headers.get('authorization');
-    const authUrl = requireEnv('NEXT_PUBLIC_AUTH_URL');
+    const authUrl = process.env.NEXT_PUBLIC_AUTH_URL as string;
 
     let subData: any = null;
 

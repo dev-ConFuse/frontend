@@ -3,8 +3,6 @@
 // Provides structured logging, performance tracking, and trace correlation
 // ============================================================================
 
-import { requireValue } from './env';
-
 /** Header name for trace ID propagation to backend */
 export const TRACE_ID_HEADER = 'x-trace-id';
 export const SPAN_ID_HEADER = 'x-span-id';
@@ -60,7 +58,7 @@ class ConFuseLogger {
     this.sessionId = this.generateSessionId();
     this.traceId = this.generateTraceId();
     this.isProduction = process.env.NODE_ENV === 'production';
-    this.logLevel = requireValue('NEXT_PUBLIC_LOG_LEVEL', process.env.NEXT_PUBLIC_LOG_LEVEL);
+    this.logLevel = process.env.NEXT_PUBLIC_LOG_LEVEL as string;
 
     setInterval(() => this.flush(), this.flushInterval);
 

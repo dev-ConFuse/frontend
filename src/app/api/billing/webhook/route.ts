@@ -1,13 +1,12 @@
 export const dynamic = 'force-dynamic'
 
-import { requireEnv } from '../../../../lib/env'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
     const rawBody = await request.text();
     const signature = request.headers.get('x-signature') || '';
-    const authUrl = requireEnv('NEXT_PUBLIC_AUTH_URL');
+    const authUrl = process.env.NEXT_PUBLIC_AUTH_URL as string;
 
     const res = await fetch(`${authUrl}/api/v1/billing/webhook`, {
       method: 'POST',

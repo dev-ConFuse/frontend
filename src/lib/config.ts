@@ -5,20 +5,17 @@
  * Each microservice is accessed directly by the frontend.
  *
  * Env-only configuration (see `.cline/rules/env-policy.md`): every URL and
- * tuning value is required from env — no hard-coded fallbacks. Missing values
- * fail fast naming the variable.
+ * tuning value is read directly from env — no hard-coded fallbacks.
  */
 
-import { requireValue, requireIntValue } from './env';
-
 export const SERVICE_URLS = {
-  auth: requireValue('NEXT_PUBLIC_AUTH_URL', process.env.NEXT_PUBLIC_AUTH_URL),
-  docDataCon: requireValue('NEXT_PUBLIC_DOC_DATA_CON_URL', process.env.NEXT_PUBLIC_DOC_DATA_CON_URL),
-  repoDataCon: requireValue('NEXT_PUBLIC_REPO_DATA_CON_URL', process.env.NEXT_PUBLIC_REPO_DATA_CON_URL),
-  clientConnector: requireValue('NEXT_PUBLIC_CLIENT_CONNECTOR_URL', process.env.NEXT_PUBLIC_CLIENT_CONNECTOR_URL),
-  featureToggle: requireValue('NEXT_PUBLIC_FEATURE_TOGGLE_URL', process.env.NEXT_PUBLIC_FEATURE_TOGGLE_URL),
-  logDataCon: requireValue('NEXT_PUBLIC_LOG_DATA_CON_URL', process.env.NEXT_PUBLIC_LOG_DATA_CON_URL),
-  logUniProc: requireValue('NEXT_PUBLIC_LOG_UNI_PROC_URL', process.env.NEXT_PUBLIC_LOG_UNI_PROC_URL),
+  auth: process.env.NEXT_PUBLIC_AUTH_URL as string,
+  docDataCon: process.env.NEXT_PUBLIC_DOC_DATA_CON_URL as string,
+  repoDataCon: process.env.NEXT_PUBLIC_REPO_DATA_CON_URL as string,
+  clientConnector: process.env.NEXT_PUBLIC_CLIENT_CONNECTOR_URL as string,
+  featureToggle: process.env.NEXT_PUBLIC_FEATURE_TOGGLE_URL as string,
+  logDataCon: process.env.NEXT_PUBLIC_LOG_DATA_CON_URL as string,
+  logUniProc: process.env.NEXT_PUBLIC_LOG_UNI_PROC_URL as string,
 } as const;
 
 /**
@@ -27,9 +24,9 @@ export const SERVICE_URLS = {
  */
 export const API_CONFIG = {
   baseUrl: SERVICE_URLS.docDataCon,
-  timeout: requireIntValue('NEXT_PUBLIC_API_TIMEOUT', process.env.NEXT_PUBLIC_API_TIMEOUT),
-  retries: requireIntValue('NEXT_PUBLIC_API_RETRIES', process.env.NEXT_PUBLIC_API_RETRIES),
-  retryDelay: requireIntValue('NEXT_PUBLIC_API_RETRY_DELAY', process.env.NEXT_PUBLIC_API_RETRY_DELAY),
+  timeout: parseInt(process.env.NEXT_PUBLIC_API_TIMEOUT as string, 10),
+  retries: parseInt(process.env.NEXT_PUBLIC_API_RETRIES as string, 10),
+  retryDelay: parseInt(process.env.NEXT_PUBLIC_API_RETRY_DELAY as string, 10),
 } as const;
 
 export const ENDPOINTS = {

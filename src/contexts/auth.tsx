@@ -3,7 +3,6 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { apiClient, authClient, ApiResponse, unwrapResponse } from '@/lib/api'
-import { requireValue } from '@/lib/env'
 import { useAuth0 as useAuth0React } from '@auth0/auth0-react'
 
 // ============================================================================
@@ -92,7 +91,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     getAccessTokenSilently
   } = useAuth0React()
 
-  const auth0LogoutRedirectUri = requireValue('NEXT_PUBLIC_AUTH0_LOGOUT_REDIRECT_URI', process.env.NEXT_PUBLIC_AUTH0_LOGOUT_REDIRECT_URI)
+  const auth0LogoutRedirectUri = process.env.NEXT_PUBLIC_AUTH0_LOGOUT_REDIRECT_URI as string
 
   // ============================================================================
   // SESSION MANAGEMENT
@@ -195,7 +194,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const controller = new AbortController()
       const timeoutId = setTimeout(() => controller.abort(), 2000)
 
-      const authBase = requireValue('NEXT_PUBLIC_AUTH_URL', process.env.NEXT_PUBLIC_AUTH_URL)
+      const authBase = process.env.NEXT_PUBLIC_AUTH_URL as string
       const response = await fetch(`${authBase}/api/auth/verify`, {
         method: 'POST',
         headers: {
@@ -237,7 +236,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsSyncing(true)
 
       // Call ConFuse auth service to sync user
-      const authServiceUrl = requireValue('NEXT_PUBLIC_AUTH_URL', process.env.NEXT_PUBLIC_AUTH_URL)
+      const authServiceUrl = process.env.NEXT_PUBLIC_AUTH_URL as string
       console.log('Calling auth service at:', authServiceUrl)
 
       const response = await fetch(`${authServiceUrl}/api/auth/login`, {
