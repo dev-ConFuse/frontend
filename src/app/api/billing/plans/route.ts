@@ -1,10 +1,11 @@
 export const dynamic = 'force-dynamic'
 
+import { requireEnv } from '../../../../lib/env'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
   try {
-    const authUrl = process.env.NEXT_PUBLIC_AUTH_URL || 'http://127.0.0.1:3010';
+    const authUrl = requireEnv('NEXT_PUBLIC_AUTH_URL');
     try {
       const res = await fetch(`${authUrl}/api/v1/billing/plans`, { cache: 'no-store' });
       if (res.ok) {

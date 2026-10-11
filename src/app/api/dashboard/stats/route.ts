@@ -1,12 +1,13 @@
 export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
+import { requireEnv } from '../../../../lib/env'
 
 const SVC = {
-  auth:    process.env.AUTH_SERVICE_URL        || 'http://localhost:3010',
-  repo:    process.env.REPO_DATA_CON_URL       || 'http://localhost:8081',
-  doc:     process.env.DOC_DATA_CON_URL        || 'http://localhost:8081',
-  logProc: process.env.LOG_UNI_PROC_URL        || 'http://localhost:8090',
+  auth:    requireEnv('AUTH_SERVICE_URL'),
+  repo:    requireEnv('REPO_DATA_CON_URL'),
+  doc:     requireEnv('DOC_DATA_CON_URL'),
+  logProc: requireEnv('LOG_UNI_PROC_URL'),
 };
 
 async function safeFetch(url: string, headers: Record<string, string>, timeoutMs = 1500) {

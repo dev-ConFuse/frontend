@@ -1,11 +1,12 @@
 export const dynamic = 'force-dynamic'
 
+import { requireEnv } from '../../../../lib/env'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
     const authHeader = request.headers.get('authorization');
-    const authUrl = process.env.NEXT_PUBLIC_AUTH_URL || 'http://127.0.0.1:3010';
+    const authUrl = requireEnv('NEXT_PUBLIC_AUTH_URL');
 
     if (authHeader) {
       const res = await fetch(`${authUrl}/api/v1/billing/portal`, {

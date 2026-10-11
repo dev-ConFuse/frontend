@@ -46,12 +46,12 @@ USER nextjs
 
 EXPOSE 3000
 
-ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
+# PORT/HOSTNAME are supplied at runtime via .map.env / .secret.env
+# (see .cline/rules/env-policy.md)
 
 # Health check optimized for Render
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost:${PORT:-3000} || exit 1
+    CMD curl -f http://localhost:${PORT}/ || exit 1
 
 # Use dumb-init as PID 1 for proper signal handling
 ENTRYPOINT ["dumb-init", "--"]
