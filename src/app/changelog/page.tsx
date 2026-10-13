@@ -25,7 +25,7 @@ const entries = [
     changes: [
       "Launched workspace support — invite team members and share context.",
       "Added URL ingestion for web pages and documentation sites.",
-      "Embedding service upgraded to Gemini Embedding 2.",
+      "Embedding service improvements for repository and document search.",
       "Introduced audit logs for all data mutations.",
     ],
   },
