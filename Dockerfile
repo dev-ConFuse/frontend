@@ -24,6 +24,26 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . ./
 
+# Build-time public configuration. Values are supplied per environment via
+# `podman build --build-arg` (never baked in — see .cline/rules/env-policy.md);
+# Next.js inlines these into the client bundle at build.
+ARG NEXT_PUBLIC_AUTH0_DOMAIN
+ARG NEXT_PUBLIC_AUTH0_CLIENT_ID
+ARG NEXT_PUBLIC_AUTH0_AUDIENCE
+ARG NEXT_PUBLIC_AUTH_URL
+ARG NEXT_PUBLIC_DOC_DATA_CON_URL
+ARG NEXT_PUBLIC_REPO_DATA_CON_URL
+ARG NEXT_PUBLIC_LOG_DATA_CON_URL
+ARG NEXT_PUBLIC_LOG_UNI_PROC_URL
+ARG NEXT_PUBLIC_CLIENT_CONNECTOR_URL
+ARG NEXT_PUBLIC_FEATURE_TOGGLE_URL
+ARG NEXT_PUBLIC_APP_URL
+ARG NEXT_PUBLIC_AUTH0_LOGOUT_REDIRECT_URI
+ARG NEXT_PUBLIC_API_TIMEOUT
+ARG NEXT_PUBLIC_API_RETRIES
+ARG NEXT_PUBLIC_API_RETRY_DELAY
+ARG NEXT_PUBLIC_LOG_LEVEL
+
 # Build the frontend
 RUN npm run build
 
