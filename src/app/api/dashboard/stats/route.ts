@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
+import { serverLogger } from '@/lib/server-logger'
 
 const SVC = {
   auth:    process.env.AUTH_SERVICE_URL as string,
@@ -93,7 +94,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(stats)
 
   } catch (error) {
-    console.error('Error fetching dashboard stats:', error)
+    serverLogger.error('Error fetching dashboard stats:', error)
 
     // Return fallback data on error
     return NextResponse.json({

@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
+import { serverLogger } from '@/lib/server-logger'
 
 export async function GET(request: NextRequest) {
   try {
@@ -29,7 +30,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(mockInvoices);
 
   } catch (error) {
-    console.error('Error fetching invoices:', error);
+    serverLogger.error('Error fetching invoices:', error);
     return NextResponse.json({ 
       error: 'Failed to fetch invoices' 
     }, { status: 500 });

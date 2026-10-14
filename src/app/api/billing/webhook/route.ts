@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
+import { serverLogger } from '@/lib/server-logger'
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,7 +21,7 @@ export async function POST(request: NextRequest) {
     const data = await res.json();
     return NextResponse.json(data, { status: res.status });
   } catch (error) {
-    console.error('Error forwarding webhook to auth-middleware:', error);
+    serverLogger.error('Error forwarding webhook to auth-middleware:', error);
     return NextResponse.json({ error: 'Webhook proxy failure' }, { status: 500 });
   }
 }

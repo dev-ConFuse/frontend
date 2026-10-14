@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { repoDataClient, authClient } from '@/lib/api'
+import { serverLogger } from '@/lib/server-logger'
 
 // Type definitions for API responses
 interface APIResponse<T = any> {
@@ -50,7 +51,7 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Error fetching landing stats:', error)
+    serverLogger.error('Error fetching landing stats:', error)
     
     // Return fallback data on error
     return NextResponse.json({

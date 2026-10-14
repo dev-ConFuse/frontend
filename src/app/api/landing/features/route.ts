@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
+import { serverLogger } from '@/lib/server-logger'
 
 export async function GET(request: NextRequest) {
   try {
@@ -82,7 +83,7 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Error fetching landing features:', error)
+    serverLogger.error('Error fetching landing features:', error)
     
     return NextResponse.json({
       success: false,

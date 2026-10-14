@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
+import { serverLogger } from '@/lib/server-logger'
 
 export async function GET(request: NextRequest) {
   try {
@@ -10,7 +11,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(mockPaymentMethods);
 
   } catch (error) {
-    console.error('Error fetching payment methods:', error);
+    serverLogger.error('Error fetching payment methods:', error);
     return NextResponse.json({ 
       error: 'Failed to fetch payment methods' 
     }, { status: 500 });
@@ -29,7 +30,7 @@ export async function POST(request: NextRequest) {
     }, { status: 201 });
 
   } catch (error) {
-    console.error('Error adding payment method:', error);
+    serverLogger.error('Error adding payment method:', error);
     return NextResponse.json({ 
       error: 'Failed to add payment method' 
     }, { status: 500 });

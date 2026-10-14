@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
+import { serverLogger } from '@/lib/server-logger'
 
 export async function GET(request: NextRequest) {
   try {
@@ -18,7 +19,7 @@ export async function GET(request: NextRequest) {
           return NextResponse.json(data);
         }
       } catch (e) {
-        console.warn('Failed proxying subscription fetch to auth-middleware:', e);
+        serverLogger.warn('Failed proxying subscription fetch to auth-middleware:', e);
       }
     }
 
@@ -43,7 +44,7 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error fetching subscription:', error);
+    serverLogger.error('Error fetching subscription:', error);
     return NextResponse.json({ error: 'Failed to fetch subscription' }, { status: 500 });
   }
 }
@@ -77,7 +78,7 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error creating checkout:', error);
+    serverLogger.error('Error creating checkout:', error);
     return NextResponse.json({ error: 'Failed to create checkout' }, { status: 500 });
   }
 }
@@ -114,7 +115,7 @@ export async function PUT(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error upgrading subscription:', error);
+    serverLogger.error('Error upgrading subscription:', error);
     return NextResponse.json({ error: 'Failed to upgrade subscription' }, { status: 500 });
   }
 }

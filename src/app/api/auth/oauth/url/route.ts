@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { serverLogger } from '@/lib/server-logger'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
@@ -27,7 +28,7 @@ export async function GET(req: NextRequest) {
     
     if (!response.ok) {
       const errorText = await response.text()
-      console.error('Auth service OAuth URL error:', errorText)
+      serverLogger.error('Auth service OAuth URL error:', errorText)
       return NextResponse.json(
         { error: `Failed to get OAuth URL: ${response.status}` },
         { status: response.status }
@@ -37,7 +38,7 @@ export async function GET(req: NextRequest) {
     const data = await response.json()
     return NextResponse.json(data)
   } catch (error) {
-    console.error('OAuth URL fetch error:', error)
+    serverLogger.error('OAuth URL fetch error:', error)
     return NextResponse.json(
       { error: 'Failed to connect to auth service' },
       { status: 500 }

@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import { NextResponse } from 'next/server'
+import { serverLogger } from '@/lib/server-logger'
 
 export async function GET() {
   try {
@@ -106,7 +107,7 @@ export async function GET() {
 
     return NextResponse.json(plans);
   } catch (error) {
-    console.error('Error fetching subscription plans:', error);
+    serverLogger.error('Error fetching subscription plans:', error);
     return NextResponse.json({ error: 'Failed to fetch subscription plans' }, { status: 500 });
   }
 }

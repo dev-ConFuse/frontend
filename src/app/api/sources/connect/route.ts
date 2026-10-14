@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { docDataClient, repoDataClient, authClient, unwrapResponse } from '@/lib/api'
+import { serverLogger } from '@/lib/server-logger'
 
 
 function extractRepositoryName(url: string): string | null {
@@ -152,7 +153,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true, message: 'Repository connected successfully', data: getData(resp) })
 
   } catch (error) {
-    console.error('Error connecting data source:', error)
+    serverLogger.error('Error connecting data source:', error)
     return NextResponse.json(
       { success: false, error: 'Internal server error' },
       { status: 500 }

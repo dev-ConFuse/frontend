@@ -1,41 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { logServerEvent } from '@/lib/server-logger'
 
 export async function GET(request: NextRequest) {
-  console.log('🔄 API callback route called')
-  console.log('📍 Request URL:', request.url)
-  
   const searchParams = request.nextUrl.searchParams
   const code = searchParams.get('code')
   const state = searchParams.get('state')
   const error = searchParams.get('error')
-  
-  console.log('🔍 API callback params:', { 
-    code: code ? 'present' : 'missing', 
-    state: state ? 'present' : 'missing', 
-    error 
+
+  // Values are logged as presence flags only — never the raw code/state
+  logServerEvent('info', 'oauth_callback_received', {
+    code: code ? 'present' : 'missing',
+    state: state ? 'present' : 'missing',
+    error,
   })
-  
+
   // Redirect to page callback with the same parameters
   const redirectUrl = new URL('/auth/callback', request.url)
-  
+
   if (code) {
     redirectUrl.searchParams.set('code', code)
-    console.log('✅ Forwarding code to page callback')
   }
   if (state) {
     redirectUrl.searchParams.set('state', state)
-    console.log('✅ Forwarding state to page callback')
   }
   if (error) {
     redirectUrl.searchParams.set('error', error)
-    console.log('❌ Forwarding error to page callback:', error)
+    logServerEvent('warn', 'oauth_callback_error_forwarded', { error })
   }
-  
-  console.log('➡️ Redirecting to:', redirectUrl.toString())
+
+  logServerEvent('info', 'oauth_callback_redirecting', {
+    location: redirectUrl.pathname,
+    outcome: 'redirect',
+  })
   return NextResponse.redirect(redirectUrl)
 }
 
 export async function POST(request: NextRequest) {
-  console.log('📨 API callback POST called')
+  logServerEvent('debug', 'oauth_callback_post')
   return GET(request)
 }

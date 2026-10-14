@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
+import { serverLogger } from '@/lib/server-logger'
 
 const PLAN_INFO: Record<string, { name: string; price_monthly: number; formatted_price: string; features: string[] }> = {
   free: {
@@ -47,7 +48,7 @@ export async function GET(request: NextRequest) {
           subData = json.data || json;
         }
       } catch (e) {
-        console.warn('Failed proxying subscription fetch to auth-middleware:', e);
+        serverLogger.warn('Failed proxying subscription fetch to auth-middleware:', e);
       }
     }
 
@@ -142,7 +143,7 @@ export async function GET(request: NextRequest) {
       data: responseData,
     });
   } catch (error) {
-    console.error('Error fetching billing dashboard:', error);
+    serverLogger.error('Error fetching billing dashboard:', error);
     return NextResponse.json({ error: 'Failed to fetch billing dashboard' }, { status: 500 });
   }
 }

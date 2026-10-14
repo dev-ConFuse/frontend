@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { Pool } from 'pg';
+import { serverLogger } from '@/lib/server-logger'
 
 const rawUrl = process.env.DATABASE_URL?.replace(/^"|"$/g, '');
 const pool = rawUrl
@@ -81,7 +82,7 @@ export async function GET() {
       client.release();
     }
   } catch (error) {
-    console.warn(`[DB Fallback] DB unavailable, using hardcoded defaults`);
+    serverLogger.warn(`[DB Fallback] DB unavailable, using hardcoded defaults`);
     const payload = { success: true, data: DEFAULT_TOGGLES };
     setCachedPayload(payload);
     return NextResponse.json(payload);

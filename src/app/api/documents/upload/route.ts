@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { SERVICE_URLS } from '@/lib/config';
+import { serverLogger } from '@/lib/server-logger'
 
 export const runtime = 'nodejs';
 
@@ -36,7 +37,7 @@ export async function POST(request: NextRequest) {
       { status: upstreamResponse.status }
     );
   } catch (error) {
-    console.error('Error proxying document upload:', error);
+    serverLogger.error('Error proxying document upload:', error);
     return NextResponse.json(
       {
         success: false,

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { serverLogger } from '@/lib/server-logger'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
@@ -17,6 +18,11 @@ export async function GET(req: NextRequest) {
   }
 
   if (error) {
+    serverLogger.warn('oauth_provider_callback_error', {
+      provider,
+      error,
+      errorDescription,
+    })
     const safeError = sanitize(errorDescription || error)
     const safeProvider = sanitize(provider)
     const html = `
@@ -39,6 +45,7 @@ export async function GET(req: NextRequest) {
   }
 
   if (!code) {
+    serverLogger.warn('oauth_provider_callback_missing_code', { provider })
     return new NextResponse('Missing authorization code', { status: 400 })
   }
 
@@ -46,6 +53,12 @@ export async function GET(req: NextRequest) {
   const safeCode = sanitize(code)
   const rawState = searchParams.get('state') || ''
   const safeState = sanitize(rawState)
+
+  serverLogger.info('oauth_provider_callback_received', {
+    provider,
+    code: 'present',
+    state: rawState ? 'present' : 'missing',
+  })
 
   // Render an HTML page that will postMessage back to the opener and close itself
   const html = `
@@ -65,6 +78,8 @@ export async function GET(req: NextRequest) {
             ts: Date.now()
           }));
         } catch (e) {
+          // Browser-side script inside an HTML response — console is the only
+          // channel here (serverLogger is server-only)
           console.error('LocalStorage error', e);
         }
 

@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { SERVICE_URLS } from '@/lib/config'
+import { serverLogger } from '@/lib/server-logger'
 
 export async function GET(request: NextRequest) {
   try {
@@ -91,7 +92,7 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Error checking system health:', error)
+    serverLogger.error('Error checking system health:', error)
     
     return NextResponse.json({
       success: false,
