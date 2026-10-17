@@ -583,17 +583,11 @@ test('user can add a new source', async ({ page }) => {
 # Install dependencies
 npm install
 
-# Start development server
+# Start development server (merges .map.env / .secret.env / .env.local via start.js)
 npm run dev
 
-# Run linting
+# Run linting (fix with: npm run lint -- --fix)
 npm run lint
-
-# Fix linting issues
-npm run lint:fix
-
-# Type checking
-npm run type-check
 ```
 
 ### Build Process
@@ -603,25 +597,11 @@ npm run build
 
 # Start production server
 npm start
-
-# Analyze bundle size
-npm run analyze
 ```
 
 ### Code Quality
-```bash
-# Run all tests
-npm test
-
-# Run tests in watch mode
-npm test --watch
-
-# Run E2E tests
-npm run test:e2e
-
-# Run accessibility tests
-npm run test:a11y
-```
+Tests (API, Selenium UI, integration) live outside the service folder in
+`ConFuse-test-module/` — see the platform testing policy (`.cline/rules/testing.md`).
 
 ## Deployment
 
@@ -692,7 +672,7 @@ spec:
 #### "Build fails with TypeScript errors"
 - Check TypeScript configuration
 - Verify type definitions
-- Run `npm run type-check` for detailed errors
+- Run `npx tsc --noEmit` for detailed errors
 
 #### "Authentication not working"
 - Verify Auth0 configuration
@@ -705,7 +685,7 @@ spec:
 - Monitor network requests in browser
 
 #### "Performance issues"
-- Check bundle size with `npm run analyze`
+- Check bundle size in the `next build` output
 - Optimize images and assets
 - Implement code splitting
 

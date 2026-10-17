@@ -47,8 +47,8 @@ Node.js 18+, npm or yarn.
 # Install dependencies
 npm install
 
-# Environment variables
-cp .env.example .env.local
+# Environment variables (merged by start.js / next.config.js)
+# .map.env (public config) + .secret.env (secrets); .env.local = optional overrides
 
 # Run development server
 npm run dev

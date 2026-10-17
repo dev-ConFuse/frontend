@@ -4,6 +4,18 @@ const dotenv = require('dotenv');
 const fs = require('fs');
 const { Pool } = require('pg');
 
+// Merged dev/build bootstrap for the frontend.
+// Parses .map.env / .secret.env / .env.local, resolves the `enableDeployedUrls`
+// DB toggle, merges the result into the Next.js process env and spawns
+// `next dev` (mode dev) or `next build` (mode build).
+// Usage: node start.js <dev|build>
+
+const mode = process.argv[2];
+if (mode !== 'dev' && mode !== 'build') {
+    console.error('Usage: node start.js <dev|build>');
+    process.exit(1);
+}
+
 // Load environment variables from custom files
 const envMapPath = path.resolve(process.cwd(), '.map.env');
 const envLocalPath = path.resolve(process.cwd(), '.env.local');
@@ -13,14 +25,16 @@ const mapEnv = fs.existsSync(envMapPath) ? dotenv.parse(fs.readFileSync(envMapPa
 const localEnv = fs.existsSync(envLocalPath) ? dotenv.parse(fs.readFileSync(envLocalPath)) : {};
 const secretEnv = fs.existsSync(envSecretPath) ? dotenv.parse(fs.readFileSync(envSecretPath)) : {};
 
-async function startDev() {
-    let useDeployedUrls = process.env.USE_DEPLOYED_URLS === 'true' || 
-                          localEnv.USE_DEPLOYED_URLS === 'true' || 
-                          secretEnv.USE_DEPLOYED_URLS === 'true' || 
+// The toggle lives in the shared PostgreSQL toggles table; when it is
+// unreachable we keep whatever the env files / process env already decided.
+async function resolveUseDeployedUrls() {
+    let useDeployedUrls = process.env.USE_DEPLOYED_URLS === 'true' ||
+                          localEnv.USE_DEPLOYED_URLS === 'true' ||
+                          secretEnv.USE_DEPLOYED_URLS === 'true' ||
                           mapEnv.USE_DEPLOYED_URLS === 'true';
 
     const dbUrl = process.env.DATABASE_URL || secretEnv.DATABASE_URL || localEnv.DATABASE_URL || mapEnv.DATABASE_URL;
-    
+
     if (dbUrl) {
         const pool = new Pool({ connectionString: dbUrl, ssl: { rejectUnauthorized: false } });
         try {
@@ -29,32 +43,58 @@ async function startDev() {
                 useDeployedUrls = res.rows[0].enabled;
             }
         } catch (err) {
-            console.error('🚀 [start-dev] Failed to fetch toggle from DB, falling back to .env:', err.message);
+            console.error(`🚀 [start-${mode}] Failed to fetch toggle from DB, falling back to .env:`, err.message);
         } finally {
             await pool.end();
         }
     }
 
-    let mergedEnv;
+    return useDeployedUrls;
+}
+
+// Deployed URLs live in .map.env, localhost overrides in .env.local;
+// the toggle decides which side of the merge wins.
+function buildEnv(useDeployedUrls) {
     if (useDeployedUrls) {
-        console.log('🚀 DB Toggle (enableDeployedUrls) is ON: Loading custom environment variables, prioritizing .map.env (deployed URLs)');
-        mergedEnv = {
+        console.log(`🚀 DB Toggle (enableDeployedUrls) is ON: Loading custom environment variables, prioritizing .map.env (deployed URLs)`);
+        return {
             ...process.env,
             ...localEnv,
             ...secretEnv,
             ...mapEnv,
-        };
-    } else {
-        console.log('🚀 DB Toggle (enableDeployedUrls) is OFF: Loading custom environment variables, prioritizing .env.local (localhost URLs)');
-        mergedEnv = {
-            ...process.env,
-            ...mapEnv,
-            ...secretEnv,
-            ...localEnv,
         };
     }
+    console.log(`🚀 DB Toggle (enableDeployedUrls) is OFF: Loading custom environment variables, prioritizing .env.local (localhost URLs)`);
+    return {
+        ...process.env,
+        ...mapEnv,
+        ...secretEnv,
+        ...localEnv,
+    };
+}
 
-    const port = mergedEnv.FRONTEND_PORT || '3000';
+async function main() {
+    const mergedEnv = buildEnv(await resolveUseDeployedUrls());
+
+    if (mode === 'build') {
+        const nextProcess = spawn('npx', ['next', 'build'], {
+            stdio: 'inherit',
+            env: mergedEnv,
+            shell: true
+        });
+
+        nextProcess.on('close', (code) => {
+            process.exit(code);
+        });
+        return;
+    }
+
+    const port = mergedEnv.PORT;
+    if (!port) {
+        console.error('PORT must be set in .map.env / .secret.env / .env.local to run the dev server');
+        process.exit(1);
+    }
+
     const nextProcess = spawn('npx', ['next', 'dev', '-p', port], {
         stdio: ['inherit', 'pipe', 'pipe'],
         env: mergedEnv,
@@ -91,4 +131,4 @@ async function startDev() {
     });
 }
 
-startDev();
+main();
