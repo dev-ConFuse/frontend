@@ -22,14 +22,29 @@ const LEVEL_ORDER: Record<ServerLogLevel, number> = {
   error: 3,
 };
 
-// Resolved once at module load (env-policy: required, fail fast at boot — the
-// frontend build merges .map.env into the process env via start-build.js, so
-// this static reference is inlined and available in the Edge runtime too).
-const CONFIGURED_LEVEL = (process.env.LOG_LEVEL ?? '').toLowerCase() as ServerLogLevel;
-if (!(CONFIGURED_LEVEL in LEVEL_ORDER)) {
-  throw new Error(
-    `Missing or invalid required environment variable: LOG_LEVEL (got ${JSON.stringify(process.env.LOG_LEVEL)})`
-  );
+// Resolved lazily on first use (env-policy: required, no literal fallback).
+// Why lazy instead of a module-load throw: `next build` executes route modules
+// while collecting page data inside the builder image, where runtime env
+// (LOG_LEVEL ships via --env-file at container start, never baked in) is
+// absent — a module-load throw would fail image builds. Fail-fast at boot is
+// preserved by src/instrumentation.ts, which validates on server start.
+let cachedLevel: ServerLogLevel | undefined;
+
+/**
+ * Validate LOG_LEVEL and cache it. Throws at server boot (via
+ * instrumentation.register) or first use when the variable is missing or not
+ * one of debug|info|warn|error.
+ */
+export function assertLoggingConfig(): ServerLogLevel {
+  if (cachedLevel !== undefined) return cachedLevel;
+  const raw = (process.env.LOG_LEVEL ?? '').toLowerCase() as ServerLogLevel;
+  if (!(raw in LEVEL_ORDER)) {
+    throw new Error(
+      `Missing or invalid required environment variable: LOG_LEVEL (got ${JSON.stringify(process.env.LOG_LEVEL)})`
+    );
+  }
+  cachedLevel = raw;
+  return cachedLevel;
 }
 
 /** Redact secret-looking query values so logs never leak credentials. */
@@ -58,7 +73,7 @@ export function logServerEvent(
   message: string,
   context: Record<string, unknown> = {}
 ): void {
-  if (LEVEL_ORDER[level] < LEVEL_ORDER[CONFIGURED_LEVEL]) return;
+  if (LEVEL_ORDER[level] < LEVEL_ORDER[assertLoggingConfig()]) return;
 
   const record = {
     timestamp: new Date().toISOString(),
@@ -89,7 +104,8 @@ export function classifyOutcome(status: number): 'success' | 'redirect' | 'clien
 /**
  * Log one access record for a completed request, at the level implied by its
  * outcome (redirects warn, 4xx warn, 5xx error) so failures are never quieter
- * than successes.
+ * than successes. Record keys use the cross-service contract names (snake_case
+ * — see .cline/rules/observability.md).
  */
 export function logAccess(params: {
   correlationId: string;
@@ -99,14 +115,23 @@ export function logAccess(params: {
   status: number;
   durationMs: number;
   location?: string | undefined;
+  client?: string | undefined;
   userAgent?: string | undefined;
 }): void {
   const outcome = classifyOutcome(params.status);
   const level: ServerLogLevel =
     outcome === 'server_error' ? 'error' : outcome === 'success' ? 'info' : 'warn';
   logServerEvent(level, `http_access ${params.method} ${params.path} ${params.status}`, {
-    ...params,
+    correlation_id: params.correlationId,
+    method: params.method,
+    path: params.path,
+    query: params.query ?? '',
+    status: params.status,
+    duration_ms: params.durationMs,
     outcome,
+    ...(params.location ? { location: params.location } : {}),
+    ...(params.client ? { client: params.client } : {}),
+    ...(params.userAgent ? { user_agent: params.userAgent } : {}),
   });
 }
 
