@@ -232,7 +232,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const handleAuth0Callback = useCallback(async (auth0AccessToken: string) => {
     try {
-      console.log('handleAuth0Callback called with token:', auth0AccessToken?.substring(0, 20) + '...')
       setIsSyncing(true)
 
       // Call ConFuse auth service to sync user
@@ -256,7 +255,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       const data = await response.json()
-      console.log('Auth service response data:', data)
 
       saveSession(auth0AccessToken, data.user)
       await refreshConnections()
@@ -516,4 +514,3 @@ export function useAuth() {
   }
   return context
 }
-
