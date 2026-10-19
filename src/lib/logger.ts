@@ -64,7 +64,10 @@ class ConFuseLogger {
 
     if (typeof window !== 'undefined') {
       window.addEventListener('beforeunload', () => this.flush());
-      window.addEventListener('unload', () => this.flush());
+      // 'unload' is deprecated and blocked by Permissions Policy in modern
+      // browsers; 'pagehide' is the supported replacement and also fires on
+      // bfcache navigations and mobile tab switches.
+      window.addEventListener('pagehide', () => this.flush());
 
       this.trackPagePerformance();
       this.setupUserActionTracking();

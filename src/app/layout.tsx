@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Space_Grotesk } from 'next/font/google'
+import localFont from 'next/font/local'
 import './globals.css'
 import { Toaster } from "@/components/ui/toaster"
 import { Toaster as Sonner } from "@/components/ui/sonner"
@@ -7,7 +7,14 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import { Providers } from './providers'
 import { StructuredData } from '@/components/StructuredData'
 
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'] })
+// Self-hosted (vendored) so image builds never depend on reaching
+// fonts.googleapis.com at build time — the container network is flaky and a
+// font fetch failure aborts `next build`.
+const spaceGrotesk = localFont({
+  src: '../fonts/SpaceGrotesk-Variable.woff2',
+  weight: '300 700',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'ConFuse - AI-powered repository unification for microservices',

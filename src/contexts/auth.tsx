@@ -214,6 +214,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } else {
           clearSession()
         }
+      } else if (response.status === 503) {
+        // Auth0 unreachable server-side — keep the session and let the next
+        // call re-verify instead of logging the user out over a network blip.
+        console.warn('Token verification deferred: auth service temporarily unavailable')
       } else {
         clearSession()
       }
@@ -251,6 +255,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!response.ok) {
         const error = await response.json()
         console.error('Auth service error:', error)
+        if (response.status === 503) {
+          // Auth0 unreachable server-side — retryable, not an auth failure.
+          throw new Error(error.message || 'Auth service temporarily unavailable, please retry')
+        }
         throw new Error(error.message || 'Auth0 login sync failed')
       }
 
