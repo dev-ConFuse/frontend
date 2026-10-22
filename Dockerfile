@@ -16,7 +16,7 @@ WORKDIR /app
 # Copy package files only
 COPY package*.json ./
 # Install all dependencies for build time (PostCSS/autoprefixer)
-RUN npm install
+RUN npm install --no-audit --no-fund --fetch-retries=5 --fetch-retry-maxtimeout=120000 --fetch-timeout=600000
 
 # Rebuild the source code only when needed
 FROM base AS builder
