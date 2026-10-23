@@ -68,11 +68,12 @@ export function Navbar({ showUserMenu = true }: { showUserMenu?: boolean }) {
                 </Button>
               ) : null}
               <Button
+                asChild
                 size="sm"
-                onClick={() => void loginWithRedirect()}
-                data-testid="navbar-get-started"
+                variant="outline"
+                data-testid="navbar-docs"
               >
-                Get Started
+                <Link href="/docs">Documentation</Link>
               </Button>
             </>
           )}

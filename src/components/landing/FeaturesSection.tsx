@@ -1,119 +1,69 @@
-'use client'
+"use client";
 
-import type { ComponentType, SVGProps } from 'react'
-import {
-  FileText,
-  GitBranch,
-  Network,
-  Search,
-  Shield,
-  Zap,
-} from 'lucide-react'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardTitle,
-} from '@/components/ui/card'
+import { ArrowRight } from "lucide-react";
 
-interface Feature {
-  icon: ComponentType<SVGProps<SVGSVGElement>>
-  title: string
-  description: string
-  testid: string
-}
+const features = [
+  {
+    title: "Multi-Source Connection",
+    description: "Integrate repositories and documentation natively. Seamlessly combine code and knowledge into a single source of truth.",
+    metric: "01"
+  },
+  {
+    title: "Immutable Context",
+    description: "Your architecture knowledge is versioned, synced, and immutable. Easily query point-in-time contexts for debugging.",
+    metric: "02"
+  },
+  {
+    title: "Granular Security",
+    description: "Row-level security and explicit scoping. Authorized agents only access what they are explicitly permitted to see.",
+    metric: "03"
+  },
+  {
+    title: "Low-Latency Retrieval",
+    description: "Optimized vector search paired with deep graph traversal ensures sub-10ms response times for complex multi-hop queries.",
+    metric: "04"
+  }
+];
 
-const FEATURES: Feature[] = [
-  {
-    icon: GitBranch,
-    title: 'Repository ingestion',
-    description:
-      'Connect GitHub, GitLab and Bitbucket. Repositories stream through an event pipeline with incremental re-processing on every push.',
-    testid: 'feature-repositories',
-  },
-  {
-    icon: FileText,
-    title: 'Document ingestion',
-    description:
-      'Bring docs, wikis and knowledge bases into the same graph so code and documentation are searchable as one corpus.',
-    testid: 'feature-documents',
-  },
-  {
-    icon: Network,
-    title: 'Knowledge graph',
-    description:
-      'Every chunk, symbol and relationship is stored in a per-user FalkorDB graph with call graphs, imports and hierarchical links.',
-    testid: 'feature-graph',
-  },
-  {
-    icon: Search,
-    title: 'Hybrid search',
-    description:
-      'Vector similarity and graph traversal are fused into a single ranked result set, tuned per source and query type.',
-    testid: 'feature-search',
-  },
-  {
-    icon: Shield,
-    title: 'Zero-trust security',
-    description:
-      'Auth0 identity, per-user graph isolation and workspace-scoped access control keep every source private by default.',
-    testid: 'feature-security',
-  },
-  {
-    icon: Zap,
-    title: 'Built for AI agents',
-    description:
-      'An MCP gateway exposes the same knowledge to your team and to AI agents, with full correlation and observability.',
-    testid: 'feature-agents',
-  },
-]
-
-/**
- * Landing-page feature grid (lazy-loaded from the home page).
- */
-export function FeaturesSection() {
+export const FeaturesSection = () => {
   return (
-    <section
-      id="features"
-      className="px-4 py-16 sm:px-6 lg:px-8"
-      data-testid="features-section"
-    >
-      <div className="mx-auto max-w-6xl">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2
-            className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl"
-            data-testid="features-heading"
-          >
-            Everything you need to unify microservice knowledge
+    <section id="features" className="py-32 bg-background relative border-b border-border">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-20">
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-foreground leading-[1.1] mb-6">
+            Engineered for scale.
+            <br />
+            Built for developers.
           </h2>
-          <p className="mt-4 text-lg text-muted-foreground">
-            From ingestion to retrieval — one platform for humans and AI agents.
-          </p>
+          <h3 className="text-xl text-muted-foreground max-w-2xl font-medium">
+            Forget disjointed context windows. Give your entire team and tooling native understanding of the codebase structure.
+          </h3>
         </div>
 
-        <div
-          className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-          data-testid="features-grid"
-        >
-          {FEATURES.map((feature) => (
-            <Card
-              key={feature.title}
-              className="bg-card border-border"
-              data-testid={feature.testid}
+        <div className="grid md:grid-cols-2 gap-px bg-border">
+          {features.map((feature, index) => (
+            <div 
+              key={index} 
+              className="bg-background p-10 hover:bg-muted/50 transition-colors group relative flex flex-col justify-between min-h-[300px]"
             >
-              <CardContent className="p-6">
-                <feature.icon className="mb-4 h-8 w-8 text-primary" />
-                <CardTitle className="mb-2 text-xl">
+              <div>
+                <div className="text-sm font-bold text-muted-foreground mb-8 font-mono">{feature.metric}</div>
+                <h2 className="text-2xl font-bold text-foreground mb-4 tracking-tight">
                   {feature.title}
-                </CardTitle>
-                <CardDescription className="text-muted-foreground">
+                </h2>
+                <p className="text-muted-foreground leading-relaxed font-medium">
                   {feature.description}
-                </CardDescription>
-              </CardContent>
-            </Card>
+                </p>
+              </div>
+              <div className="mt-8 opacity-0 group-hover:opacity-100 transition-opacity">
+                <ArrowRight className="w-5 h-5 text-foreground" />
+              </div>
+            </div>
           ))}
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
+
+export default FeaturesSection;
