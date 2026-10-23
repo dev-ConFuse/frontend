@@ -1,4 +1,5 @@
 import { getDocBySlug, getDocSlugs } from '@/lib/docs';
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -13,6 +14,19 @@ const Footer = dynamic(() => import("@/components/layout/footer").then(mod => mo
 export async function generateStaticParams() {
   const slugs = getDocSlugs();
   return slugs.map((slug) => ({ slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const doc = getDocBySlug(slug);
+  return {
+    title: doc ? `ConFuse - ${doc.title}` : 'ConFuse - Documentation',
+    description: doc?.description,
+  };
 }
 
 export default async function DocPage({ params }: { params: Promise<{ slug: string }> }) {

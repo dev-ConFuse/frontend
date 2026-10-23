@@ -1,5 +1,12 @@
 import { getAllDocs } from "@/lib/docs";
+import type { Metadata } from "next";
 import { BookOpen, FileText } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "ConFuse - Documentation",
+  description:
+    "Guides, concepts and learning material for ConFuse — for users, administrators and self-learners.",
+};
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
