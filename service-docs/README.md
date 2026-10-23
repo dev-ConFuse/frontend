@@ -2,8 +2,10 @@
 
 **Port**: 3000 · **Stack**: Next.js (React, TypeScript, Tailwind CSS)
 
-> This is the canonical README for the service; **all documentation lives in
-> [`docs/`](./)** (this folder). See [index.md](index.md) for the docs index.
+> This is the canonical README for the service. **Internal engineering docs live
+> in [`service-docs/`](./)** (this folder) — see [index.md](index.md) for the
+> index. **Public user documentation lives in [`docs/`](../docs)** and is what
+> the in-app `/docs` page serves; never put internal detail there.
 
 ## Overview
 

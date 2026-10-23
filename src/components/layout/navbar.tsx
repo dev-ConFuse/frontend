@@ -35,6 +35,13 @@ export function Navbar({ showUserMenu = true }: { showUserMenu?: boolean }) {
           >
             Features
           </a>
+          <Link
+            href="/docs"
+            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+            data-testid="navbar-docs"
+          >
+            Documentation
+          </Link>
         </nav>
 
         <div className="flex items-center gap-3" data-testid="navbar-actions">
@@ -67,14 +74,6 @@ export function Navbar({ showUserMenu = true }: { showUserMenu?: boolean }) {
                   Sign In
                 </Button>
               ) : null}
-              <Button
-                asChild
-                size="sm"
-                variant="outline"
-                data-testid="navbar-docs"
-              >
-                <Link href="/docs">Documentation</Link>
-              </Button>
             </>
           )}
         </div>
