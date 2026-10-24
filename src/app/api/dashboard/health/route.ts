@@ -1,16 +1,17 @@
 export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
-import { SERVICE_URLS } from '@/lib/config'
+import { SERVER_URLS } from '@/lib/config'
 import { serverLogger } from '@/lib/server-logger'
 
 export async function GET(request: NextRequest) {
   try {
-    // Define services to check
+    // SERVER_URLS, not SERVICE_URLS: this route runs inside the frontend
+    // container, where "localhost" is the frontend itself. See lib/config.ts.
     const services = [
-      { name: 'doc-data-con', url: SERVICE_URLS.docDataCon },
-      { name: 'repo-data-con', url: SERVICE_URLS.repoDataCon },
-      { name: 'auth-middleware', url: SERVICE_URLS.auth }
+      { name: 'doc-data-con', url: SERVER_URLS.docDataCon },
+      { name: 'repo-data-con', url: SERVER_URLS.repoDataCon },
+      { name: 'auth-middleware', url: SERVER_URLS.auth }
     ]
 
     // Check health of all services

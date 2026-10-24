@@ -1,10 +1,11 @@
+﻿import { SERVER_URLS } from '@/lib/config';
 import { NextRequest, NextResponse } from 'next/server'
 import { serverLogger } from '@/lib/server-logger'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const provider = searchParams.get('provider') || 'github'
-  const authServiceUrl = process.env.AUTH_SERVICE_URL || process.env.NEXT_PUBLIC_AUTH_URL
+  const authServiceUrl = process.env.AUTH_SERVICE_URL || SERVER_URLS.auth
   
   try {
     // Forward the request to the auth backend service

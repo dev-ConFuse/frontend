@@ -1,3 +1,4 @@
+﻿import { SERVER_URLS } from '@/lib/config';
 export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -5,7 +6,7 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function POST(request: NextRequest) {
   try {
     const authHeader = request.headers.get('authorization');
-    const authUrl = process.env.NEXT_PUBLIC_AUTH_URL as string;
+    const authUrl = SERVER_URLS.auth;
 
     if (authHeader) {
       const res = await fetch(`${authUrl}/api/v1/billing/portal`, {

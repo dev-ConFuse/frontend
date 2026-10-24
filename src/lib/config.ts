@@ -19,6 +19,27 @@ export const SERVICE_URLS = {
 } as const;
 
 /**
+ * Server-side (BFF) upstream URLs — used ONLY by code running in Next.js route
+ * handlers / server components.
+ *
+ * `SERVICE_URLS` above holds `NEXT_PUBLIC_*` values, which are baked in at build
+ * time and are correct for the **browser** (it reaches services on published
+ * ports, e.g. http://localhost:8081). A BFF route runs inside its own container,
+ * where "localhost" is the container itself — so it must use the runtime service
+ * URLs instead (e.g. http://doc-data-con:8081), which come from the runtime env
+ * file and therefore stay correct per environment.
+ *
+ * Falls back to the browser URL when no server-side variable is set, so local
+ * `next dev` outside a container keeps working unchanged.
+ */
+export const SERVER_URLS = {
+  auth: (process.env.AUTH_SERVICE_URL as string) || SERVICE_URLS.auth,
+  docDataCon: (process.env.DOC_DATA_CON_URL as string) || SERVICE_URLS.docDataCon,
+  repoDataCon: (process.env.REPO_DATA_CON_URL as string) || SERVICE_URLS.repoDataCon,
+  logUniProc: (process.env.LOG_UNI_PROC_URL as string) || SERVICE_URLS.logUniProc,
+} as const;
+
+/**
  * @deprecated Use SERVICE_URLS instead. Kept for backward compatibility
  * during migration. Maps to data-connector as the default service.
  */

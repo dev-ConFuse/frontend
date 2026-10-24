@@ -1,3 +1,4 @@
+﻿import { SERVER_URLS } from '@/lib/config';
 export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -7,7 +8,7 @@ export async function POST(request: NextRequest) {
   try {
     const rawBody = await request.text();
     const signature = request.headers.get('x-signature') || '';
-    const authUrl = process.env.NEXT_PUBLIC_AUTH_URL as string;
+    const authUrl = SERVER_URLS.auth;
 
     const res = await fetch(`${authUrl}/api/v1/billing/webhook`, {
       method: 'POST',

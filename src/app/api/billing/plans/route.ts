@@ -1,3 +1,4 @@
+﻿import { SERVER_URLS } from '@/lib/config';
 export const dynamic = 'force-dynamic'
 
 import { NextResponse } from 'next/server'
@@ -5,7 +6,7 @@ import { serverLogger } from '@/lib/server-logger'
 
 export async function GET() {
   try {
-    const authUrl = process.env.NEXT_PUBLIC_AUTH_URL as string;
+    const authUrl = SERVER_URLS.auth;
     try {
       const res = await fetch(`${authUrl}/api/v1/billing/plans`, { cache: 'no-store' });
       if (res.ok) {
@@ -22,7 +23,7 @@ export async function GET() {
         name: 'Free',
         tier: 'free',
         price_monthly: 0,
-        formatted_price: '₹0/month',
+        formatted_price: 'â‚¹0/month',
         description: 'For individual developers getting started with code and document intelligence.',
         features: [
           'Up to 2 repos and 4 documents',
@@ -43,7 +44,7 @@ export async function GET() {
         name: 'ConFuse Pro',
         tier: 'pro',
         price_monthly: 800,
-        formatted_price: '₹800.00/month',
+        formatted_price: 'â‚¹800.00/month',
         description: 'For power developers needing higher storage and expanded query limits.',
         features: [
           'Up to 5 repos and 10 documents',
@@ -64,7 +65,7 @@ export async function GET() {
         name: 'ConFuse Team',
         tier: 'team',
         price_monthly: 2300,
-        formatted_price: '₹2,300.00/month',
+        formatted_price: 'â‚¹2,300.00/month',
         description: 'For engineering teams requiring shared databases and advanced security controls.',
         features: [
           'Up to 10 repos and 16 documents',
@@ -86,7 +87,7 @@ export async function GET() {
         name: 'ConFuse Enterprise',
         tier: 'enterprise',
         price_monthly: 4000,
-        formatted_price: '₹4,000.00+/month',
+        formatted_price: 'â‚¹4,000.00+/month',
         description: 'For enterprise teams requiring high throughput, dedicated quotas, and custom compliance.',
         features: [
           'Custom / Unlimited repos and documents',

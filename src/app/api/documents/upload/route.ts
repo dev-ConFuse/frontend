@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { SERVICE_URLS } from '@/lib/config';
+import { SERVER_URLS } from '@/lib/config';
 import { serverLogger } from '@/lib/server-logger'
 
 export const runtime = 'nodejs';
@@ -9,7 +9,9 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const authHeader = request.headers.get('authorization') || request.headers.get('Authorization');
     const userIdHeader = request.headers.get('x-user-id');
-    const upstreamUrl = `${SERVICE_URLS.docDataCon}/api/documents/upload`;
+    // SERVER_URLS, not SERVICE_URLS: this route runs inside the frontend
+    // container, where "localhost" is the frontend itself. See lib/config.ts.
+    const upstreamUrl = `${SERVER_URLS.docDataCon}/api/documents/upload`;
 
     const upstreamResponse = await fetch(upstreamUrl, {
       method: 'POST',
