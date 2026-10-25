@@ -10,7 +10,7 @@ const SVC = {
   logProc: process.env.LOG_UNI_PROC_URL as string,
 };
 
-async function safeFetch(url: string, headers: Record<string, string>, timeoutMs = 1500) {
+async function safeFetch(url: string, headers: Record<string, string>, timeoutMs = 15000) {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeoutMs);
   try {
@@ -27,7 +27,17 @@ async function safeFetch(url: string, headers: Record<string, string>, timeoutMs
 export async function GET(request: NextRequest) {
   try {
     const authHeader = request.headers.get('authorization') || request.headers.get('Authorization')
-    const userIdHeader = request.headers.get('x-user-id') || 'default_user'
+    // Never invent a tenant: without x-user-id there is no graph scope to query,
+    // and a synthetic 'default_user' would silently report someone else's (or no)
+    // data as if it were yours - one of the sources of the "0 on the dashboard,
+    // 3 in the list" inconsistency.
+    const userIdHeader = request.headers.get('x-user-id')
+    if (!userIdHeader) {
+      return NextResponse.json(
+        { error: 'x-user-id header required' },
+        { status: 400 }
+      )
+    }
     const headers: Record<string, string> = { 'x-user-id': userIdHeader }
     if (authHeader) headers['Authorization'] = authHeader
 
@@ -71,12 +81,23 @@ export async function GET(request: NextRequest) {
 
     const activity: any[] = [];
 
+    // Surface, rather than hide, upstream failures. A failed fetch used to
+    // render as a bare "0", which is exactly what made the Overview disagree
+    // with the documents list - the list was live and the count was not.
+    const degraded = {
+      repositories: !reposResponse,
+      documents: !docsResponse,
+      logs: !logsResponse,
+      urls: !urlsResponse,
+    };
+
     // Calculate dashboard stats
     const stats = {
       repositories: Array.isArray(reposData) ? reposData.length : 0,
       documents: Array.isArray(docs) ? docs.length : 0,
       urls: Array.isArray(urls) ? urls.length : 0,
       logs: logStats?.log_entries || 0,
+      degraded: degraded,
       activity: activity,
       connections: calculateConnections(reposData, urls),
       context_requests: userStatsData?.context_requests || 0,
