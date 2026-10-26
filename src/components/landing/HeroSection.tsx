@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Play } from "lucide-react";
+import { ArrowRight, Database, Play } from "lucide-react";
 import { useAuth } from '@/contexts/auth';
 import { DemoModal } from "./DemoModal";
 
@@ -20,6 +20,11 @@ export function HeroSection() {
 
   const handleViewDocs = () => {
     window.open("/docs", "_blank");
+  };
+
+  /** BYODB — connect a personal / self-hosted FalkorDB instead of using ours. */
+  const handleBYODB = () => {
+    window.location.href = '/byodb';
   };
 
   return (
@@ -67,6 +72,15 @@ export function HeroSection() {
             >
               <Play className="w-4 h-4 mr-2" />
               Watch Demo
+            </Button>
+            <Button
+              variant="outline"
+              className="h-12 px-8 border-border hover:bg-muted transition-colors rounded-none font-medium text-base"
+              onClick={handleBYODB}
+              title="Bring your own database — connect your own FalkorDB Cloud account or a self-hosted FalkorDB"
+            >
+              <Database className="w-4 h-4 mr-2" />
+              BYODB
             </Button>
           </div>
 
