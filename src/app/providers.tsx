@@ -21,7 +21,29 @@ function AuthLoggingWrapper({ children }: { children: React.ReactNode }) {
 }
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const [queryClient] = useState(() => new QueryClient())
+  // One QueryClient for the app, tuned for a dashboard that polls on every
+  // screen. React Query's stock defaults (staleTime: 0, retry: 3,
+  // refetchOnWindowFocus: true) mean every component mount and every
+  // window-focus fired a fresh round of backend calls — which is why "many
+  // operations take long" even though each backend answers in tens of ms.
+  const [queryClient] = useState(() => new QueryClient({
+    defaultOptions: {
+      queries: {
+        // Fresh for 30s: remounting a panel reuses the cache instead of
+        // re-hitting the API. Still short enough to feel live.
+        staleTime: 30_000,
+        // Keep unmounted data around briefly so back/forward is instant.
+        gcTime: 5 * 60_000,
+        // One retry only. A hung upstream must fail fast rather than be
+        // retried 3x, each with exponential backoff.
+        retry: 1,
+        // Switching tabs/windows must not trigger a refetch storm.
+        refetchOnWindowFocus: false,
+        // Reconnects should refresh — data may have changed while offline.
+        refetchOnReconnect: true,
+      },
+    },
+  }))
 
   return (
     <QueryClientProvider client={queryClient}>

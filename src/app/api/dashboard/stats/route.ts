@@ -10,7 +10,14 @@ const SVC = {
   logProc: process.env.LOG_UNI_PROC_URL as string,
 };
 
-async function safeFetch(url: string, headers: Record<string, string>, timeoutMs = 15000) {
+// Hard ceiling on any single upstream call. This route fans out to 5 services
+// in parallel, so its wall-clock cost equals the SLOWTEST of them. When one
+// backend is cold (Neon can take seconds to wake) a 15s ceiling meant the whole
+// dashboard sat behind a shimmer for up to a quarter of a minute. 4s is long
+// enough for a warm backend and short enough that a cold one degrades visibly
+// instead of freezing the page; the `degraded` flags below tell the UI which
+// parts are stale rather than showing a false "0".
+async function safeFetch(url: string, headers: Record<string, string>, timeoutMs = 4000) {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeoutMs);
   try {
