@@ -6,11 +6,11 @@ import { CheckCircle2, XCircle, AlertTriangle, Server, GitBranch } from 'lucide-
 import {
   ERROR_HINTS,
   STEP_LABELS,
-  type FalkorDBConnectionTestResult,
-  type FalkorDBTestStep,
+  type FalkorDbConnectionTestResult,
+  type FalkorDbTestStep,
 } from '@/lib/falkordb'
 
-function StepRow({ step }: { step: FalkorDBTestStep }) {
+function StepRow({ step }: { step: FalkorDbTestStep }) {
   return (
     <div className="flex items-start gap-3 py-2">
       <div className="mt-0.5">
@@ -40,7 +40,7 @@ function StepRow({ step }: { step: FalkorDBTestStep }) {
  * FalkorDB module → graph access) so a failure is attributable to exactly one
  * layer rather than reported as a generic "connection failed".
  */
-export function TestResultPanel({ result }: { result: FalkorDBConnectionTestResult }) {
+export function TestResultPanel({ result }: { result: FalkorDbConnectionTestResult }) {
   const hint = result.error ? ERROR_HINTS[result.error.code] : undefined
 
   return (

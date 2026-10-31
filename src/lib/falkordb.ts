@@ -21,14 +21,14 @@
 // Types — mirror `auth-middleware/src/types/falkordb.ts`
 // ============================================================================
 
-export type FalkorDBTopology = 'standalone' | 'sentinel' | 'cluster';
+export type FalkorDbTopology = 'standalone' | 'sentinel' | 'cluster';
 
-export type FalkorDBDeploymentType = 'cloud' | 'self_hosted' | 'byoc' | 'unknown';
+export type FalkorDbDeploymentType = 'cloud' | 'self_hosted' | 'byoc' | 'unknown';
 
-export type FalkorDBTestStatus = 'passed' | 'failed';
+export type FalkorDbTestStatus = 'passed' | 'failed';
 
 /** Write-only payload used to create/update a connection or run an unsaved test. */
-export interface FalkorDBConnectionInput {
+export interface FalkorDbConnectionInput {
   name?: string;
 
   /** Convenience form: `falkor://` `falkors://` `redis://` `rediss://host:port`. */
@@ -51,8 +51,8 @@ export interface FalkorDBConnectionInput {
   clientCertificate?: string;
   clientKey?: string;
 
-  topology?: FalkorDBTopology;
-  deploymentType?: FalkorDBDeploymentType;
+  topology?: FalkorDbTopology;
+  deploymentType?: FalkorDbDeploymentType;
   sentinelMasterName?: string;
 
   clearPassword?: boolean;
@@ -65,7 +65,7 @@ export interface FalkorDBConnectionInput {
 }
 
 /** Safe representation returned by the API — secrets become booleans. */
-export interface FalkorDBConnectionPublic {
+export interface FalkorDbConnectionPublic {
   id: string;
   customerId: string;
   name: string;
@@ -78,31 +78,31 @@ export interface FalkorDBConnectionPublic {
   hasCaCertificate: boolean;
   hasClientCertificate: boolean;
   hasClientKey: boolean;
-  topology?: FalkorDBTopology;
-  deploymentType?: FalkorDBDeploymentType;
+  topology?: FalkorDbTopology;
+  deploymentType?: FalkorDbDeploymentType;
   sentinelMasterName?: string;
   status: 'active' | 'disabled';
   lastTestedAt?: string | null;
-  lastTestStatus?: FalkorDBTestStatus | null;
+  lastTestStatus?: FalkorDbTestStatus | null;
   createdAt: string;
   updatedAt: string;
 }
 
-export type FalkorDBTestStepName =
+export type FalkorDbTestStepName =
   | 'connect'
   | 'authenticate'
   | 'ping'
   | 'falkordb'
   | 'graph';
 
-export interface FalkorDBTestStep {
-  name: FalkorDBTestStepName;
+export interface FalkorDbTestStep {
+  name: FalkorDbTestStepName;
   ok: boolean;
   message: string;
   durationMs: number;
 }
 
-export type FalkorDBErrorCode =
+export type FalkorDbErrorCode =
   | 'INVALID_CONFIG'
   | 'DNS_FAILURE'
   | 'CONNECTION_REFUSED'
@@ -116,16 +116,16 @@ export type FalkorDBErrorCode =
   | 'SECRET_ERROR'
   | 'UNKNOWN';
 
-export interface FalkorDBTestError {
-  code: FalkorDBErrorCode;
+export interface FalkorDbTestError {
+  code: FalkorDbErrorCode;
   /** Redacted, safe-to-display. Never contains secrets. */
   message: string;
   hints: string[];
 }
 
-export interface FalkorDBConnectionTestResult {
+export interface FalkorDbConnectionTestResult {
   success: boolean;
-  steps: FalkorDBTestStep[];
+  steps: FalkorDbTestStep[];
   server?: {
     version?: string;
     graphCount?: number;
@@ -134,7 +134,7 @@ export interface FalkorDBConnectionTestResult {
     name: string;
     exists: boolean;
   };
-  error?: FalkorDBTestError;
+  error?: FalkorDbTestError;
   durationMs: number;
 }
 
@@ -210,7 +210,7 @@ async function callBff<T>(
 
 /** Build the write-only payload, dropping empty values so the backend
  *  treats them as "unchanged" rather than "cleared". */
-function toPayload(input: FalkorDBConnectionInput): Record<string, unknown> {
+function toPayload(input: FalkorDbConnectionInput): Record<string, unknown> {
   const payload: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(input)) {
     if (value === undefined || value === null || value === '') continue;
@@ -223,18 +223,18 @@ function toPayload(input: FalkorDBConnectionInput): Record<string, unknown> {
 // Public operations
 // ============================================================================
 
-export async function listFalkorDBConnections(token?: string): Promise<FalkorDBConnectionPublic[]> {
-  const res = await callBff<{ connections: FalkorDBConnectionPublic[] }>('', {
+export async function listFalkorDbConnections(token?: string): Promise<FalkorDbConnectionPublic[]> {
+  const res = await callBff<{ connections: FalkorDbConnectionPublic[] }>('', {
     token: resolveToken(token),
   });
   return res.connections ?? [];
 }
 
-export async function testFalkorDBConnection(
-  input: FalkorDBConnectionInput,
+export async function testFalkorDbConnection(
+  input: FalkorDbConnectionInput,
   token?: string
-): Promise<FalkorDBConnectionTestResult> {
-  const res = await callBff<{ testResult: FalkorDBConnectionTestResult }>('/test', {
+): Promise<FalkorDbConnectionTestResult> {
+  const res = await callBff<{ testResult: FalkorDbConnectionTestResult }>('/test', {
     method: 'POST',
     token: resolveToken(token),
     body: JSON.stringify(toPayload(input)),
@@ -242,11 +242,11 @@ export async function testFalkorDBConnection(
   return res.testResult;
 }
 
-export async function createFalkorDBConnection(
-  input: FalkorDBConnectionInput,
+export async function createFalkorDbConnection(
+  input: FalkorDbConnectionInput,
   token?: string
-): Promise<FalkorDBConnectionPublic> {
-  const res = await callBff<{ connection: FalkorDBConnectionPublic }>('', {
+): Promise<FalkorDbConnectionPublic> {
+  const res = await callBff<{ connection: FalkorDbConnectionPublic }>('', {
     method: 'POST',
     token: resolveToken(token),
     body: JSON.stringify(toPayload(input)),
@@ -254,18 +254,18 @@ export async function createFalkorDBConnection(
   return res.connection;
 }
 
-export async function deleteFalkorDBConnection(id: string, token?: string): Promise<void> {
+export async function deleteFalkorDbConnection(id: string, token?: string): Promise<void> {
   await callBff<{ success: boolean }>(`/${encodeURIComponent(id)}`, {
     method: 'DELETE',
     token: resolveToken(token),
   });
 }
 
-export async function testSavedFalkorDBConnection(
+export async function testSavedFalkorDbConnection(
   id: string,
   token?: string
-): Promise<FalkorDBConnectionTestResult> {
-  const res = await callBff<{ testResult: FalkorDBConnectionTestResult }>(
+): Promise<FalkorDbConnectionTestResult> {
+  const res = await callBff<{ testResult: FalkorDbConnectionTestResult }>(
     `/${encodeURIComponent(id)}/test`,
     { method: 'POST', token: resolveToken(token) }
   );
@@ -277,7 +277,7 @@ export async function testSavedFalkorDBConnection(
 // ============================================================================
 
 /** Human label for a verifier step. */
-export const STEP_LABELS: Record<FalkorDBTestStepName, string> = {
+export const STEP_LABELS: Record<FalkorDbTestStepName, string> = {
   connect: 'TCP connect',
   authenticate: 'Authenticate',
   ping: 'PING',
@@ -286,7 +286,7 @@ export const STEP_LABELS: Record<FalkorDBTestStepName, string> = {
 };
 
 /** Human label for a deployment type. */
-export const DEPLOYMENT_LABELS: Record<FalkorDBDeploymentType, string> = {
+export const DEPLOYMENT_LABELS: Record<FalkorDbDeploymentType, string> = {
   cloud: 'FalkorDB Cloud',
   self_hosted: 'Self-hosted',
   byoc: 'BYOC',
@@ -294,7 +294,7 @@ export const DEPLOYMENT_LABELS: Record<FalkorDBDeploymentType, string> = {
 };
 
 /** Actionable hint text for the error codes the backend classifies. */
-export const ERROR_HINTS: Partial<Record<FalkorDBErrorCode, string>> = {
+export const ERROR_HINTS: Partial<Record<FalkorDbErrorCode, string>> = {
   DNS_FAILURE: 'Check the hostname for typos and confirm it resolves publicly.',
   CONNECTION_REFUSED: 'The host is reachable but nothing answered on that port.',
   TCP_TIMEOUT: 'A firewall or security group is most likely blocking the port.',

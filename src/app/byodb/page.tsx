@@ -22,14 +22,14 @@ import {
   Zap,
 } from 'lucide-react'
 import {
-  createFalkorDBConnection,
-  deleteFalkorDBConnection,
-  listFalkorDBConnections,
-  testFalkorDBConnection,
-  testSavedFalkorDBConnection,
-  type FalkorDBConnectionInput,
-  type FalkorDBConnectionPublic,
-  type FalkorDBConnectionTestResult,
+  createFalkorDbConnection,
+  deleteFalkorDbConnection,
+  listFalkorDbConnections,
+  testFalkorDbConnection,
+  testSavedFalkorDbConnection,
+  type FalkorDbConnectionInput,
+  type FalkorDbConnectionPublic,
+  type FalkorDbConnectionTestResult,
 } from '@/lib/falkordb'
 import { TestResultPanel } from './components/TestResultPanel'
 import { ConnectionList } from './components/ConnectionList'
@@ -73,8 +73,8 @@ export default function ByodbPage() {
   // UI state
   const [testing, setTesting] = useState(false)
   const [saving, setSaving] = useState(false)
-  const [result, setResult] = useState<FalkorDBConnectionTestResult | null>(null)
-  const [connections, setConnections] = useState<FalkorDBConnectionPublic[]>([])
+  const [result, setResult] = useState<FalkorDbConnectionTestResult | null>(null)
+  const [connections, setConnections] = useState<FalkorDbConnectionPublic[]>([])
   const [busyId, setBusyId] = useState<string | null>(null)
   const [loadingList, setLoadingList] = useState(true)
 
@@ -86,7 +86,7 @@ export default function ByodbPage() {
     }
     setLoadingList(true)
     try {
-      setConnections(await listFalkorDBConnections())
+      setConnections(await listFalkorDbConnections())
     } catch {
       // A missing/unavailable list must not block the connect form itself.
       setConnections([])
@@ -100,8 +100,8 @@ export default function ByodbPage() {
   }, [loadConnections])
 
   /** Assemble the write-only payload for the active mode. */
-  function buildInput(): FalkorDBConnectionInput {
-    const shared: FalkorDBConnectionInput = {
+  function buildInput(): FalkorDbConnectionInput {
+    const shared: FalkorDbConnectionInput = {
       name: name.trim() || undefined,
       graphName: graphName.trim(),
     }
@@ -158,7 +158,7 @@ export default function ByodbPage() {
     setTesting(true)
     setResult(null)
     try {
-      setResult(await testFalkorDBConnection(buildInput()))
+      setResult(await testFalkorDbConnection(buildInput()))
     } catch (e) {
       setResult({
         success: false,
@@ -185,7 +185,7 @@ export default function ByodbPage() {
 
     setSaving(true)
     try {
-      const created = await createFalkorDBConnection(buildInput())
+      const created = await createFalkorDbConnection(buildInput())
       toast({
         title: 'Database connected',
         description: `${created.name} is now your ConFuse knowledge store.`,
@@ -210,7 +210,7 @@ export default function ByodbPage() {
   async function handleRetest(id: string) {
     setBusyId(id)
     try {
-      const testResult = await testSavedFalkorDBConnection(id)
+      const testResult = await testSavedFalkorDbConnection(id)
       setResult(testResult)
       toast({
         title: testResult.success ? 'Connection verified' : 'Connection failed',
@@ -234,7 +234,7 @@ export default function ByodbPage() {
   async function handleDelete(id: string) {
     setBusyId(id)
     try {
-      await deleteFalkorDBConnection(id)
+      await deleteFalkorDbConnection(id)
       toast({ title: 'Database disconnected', description: 'Its stored credentials were purged.' })
       await loadConnections()
     } catch (e) {

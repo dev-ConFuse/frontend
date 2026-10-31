@@ -6,11 +6,11 @@ import { Badge } from '@/components/ui/badge'
 import { Database, Loader2, RefreshCw, Trash2 } from 'lucide-react'
 import {
   DEPLOYMENT_LABELS,
-  type FalkorDBConnectionPublic,
+  type FalkorDbConnectionPublic,
 } from '@/lib/falkordb'
 
 interface ConnectionListProps {
-  connections: FalkorDBConnectionPublic[]
+  connections: FalkorDbConnectionPublic[]
   busyId: string | null
   onRetest: (id: string) => void
   onDelete: (id: string) => void
