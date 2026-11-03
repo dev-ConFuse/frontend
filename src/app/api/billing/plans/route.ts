@@ -26,7 +26,7 @@ export async function GET() {
         formatted_price: '₹0/month',
         description: 'For individual developers getting started with code and document intelligence.',
         features: [
-          'Up to 2 repos and 4 documents',
+          'Up to 3 repos and 4 documents',
           '256 MB max storage size (processing stops when reached)',
           '80,000 requests per month',
           'Strong security (TLS 1.3, CSP, token blacklisting)'

@@ -13,7 +13,7 @@ export function PricingPage() {
       period: "forever",
       description: "Perfect for individual developers and small personal projects",
       features: [
-        "Up to 2 repos and 4 documents",
+        "Up to 3 repos and 4 documents",
         "Max 256 MB storage (processing stops when limit is reached)",
         "80,000 requests per month",
         "Strong security (TLS 1.3, CSP, token blacklisting)"

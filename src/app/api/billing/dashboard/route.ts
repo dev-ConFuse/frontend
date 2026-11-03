@@ -9,7 +9,7 @@ const PLAN_INFO: Record<string, { name: string; price_monthly: number; formatted
     name: 'Free Plan',
     price_monthly: 0,
     formatted_price: '₹0/month',
-    features: ['Up to 2 repos', 'Up to 4 documents', '256 MB max storage', '80,000 requests/mo'],
+    features: ['Up to 3 repos', 'Up to 4 documents', '256 MB max storage', '80,000 requests/mo'],
   },
   pro: {
     name: 'ConFuse Pro',
@@ -147,4 +147,4 @@ export async function GET(request: NextRequest) {
     serverLogger.error('Error fetching billing dashboard:', error);
     return NextResponse.json({ error: 'Failed to fetch billing dashboard' }, { status: 500 });
   }
-}
+}

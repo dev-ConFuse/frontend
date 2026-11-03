@@ -646,7 +646,7 @@ export function ConnectRepositoryDialog({ open, onOpenChange, onSuccess, current
 
           <div className="flex justify-end space-x-3 pt-6 items-center">
             {limitReached && (
-              <span className="text-red-500 text-sm font-medium mr-auto">Max. limit reached (2 repositories)</span>
+              <span className="text-red-500 text-sm font-medium mr-auto">Max. limit reached (3 repositories)</span>
             )}
             <Button variant="outline" onClick={handleCancel}>
               Cancel
