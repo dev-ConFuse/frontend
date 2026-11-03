@@ -4,9 +4,8 @@ import { useState } from 'react'
 import { useAuth } from '@/contexts/auth'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Button } from '@/components/ui/button'
-import { ArrowLeft, CreditCard } from 'lucide-react'
-import Link from 'next/link'
+import { CreditCard } from 'lucide-react'
+import { PageHeader } from '@/components/layout/PageHeader'
 import { ProfileAvatar } from '@/components/ui/ProfileAvatar'
 import { Footer } from '@/components/layout/footer'
 import { BillingDashboard } from '@/app/billing/components/BillingDashboard'
@@ -26,32 +25,14 @@ export default function BillingPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="border-b border-border bg-card/50 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            <div className="flex items-center space-x-4">
-              <Link href="/dashboard">
-                <Button variant="ghost" size="sm">
-                  <ArrowLeft className="w-4 h-4" />
-                </Button>
-              </Link>
-              <div className="flex items-center space-x-3">
-                <CreditCard className="w-6 h-6 text-primary" />
-                <h1 className="text-2xl font-bold text-foreground">Billing & Subscription</h1>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <ProfileAvatar />
-            </div>
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        title="Billing & Subscription"
+        description="Manage your subscription, payment methods, and billing information."
+        icon={CreditCard}
+        actions={<ProfileAvatar />}
+      />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <p className="text-muted-foreground mb-8">
-          Manage your subscription, payment methods, and billing information.
-        </p>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-5">

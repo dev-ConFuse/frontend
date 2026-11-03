@@ -32,6 +32,13 @@ export function Footer() {
           >
             Features
           </a>
+          <Link
+            href="/pricing"
+            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+            data-testid="footer-pricing"
+          >
+            Pricing
+          </Link>
         </nav>
 
         <p className="text-sm text-muted-foreground" data-testid="footer-copyright">

@@ -1,54 +1,28 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { ArrowLeft } from 'lucide-react'
-import { useAuth } from '@/contexts/auth'
-import { Button } from '@/components/ui/button'
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { UserCog } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { AuthGuard } from '@/app/auth/components/AuthGuard'
+import { PageHeader } from '@/components/layout/PageHeader'
 import { ProfileSettings } from '@/app/account/components/ProfileSettings'
 import { SecuritySettings } from '@/app/account/components/SecuritySettings'
 import { NotificationSettings } from '@/app/account/components/NotificationSettings'
 import { AccountDeletion } from '@/app/account/components/AccountDeletion'
 
 export default function AccountPage() {
-  const { isAuthenticated } = useAuth()
   const [activeTab, setActiveTab] = useState('profile')
-  const router = useRouter()
-
-  if (!isAuthenticated) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>Authentication Required</CardTitle>
-            <CardDescription>
-              Please log in to access your account settings.
-            </CardDescription>
-          </CardHeader>
-        </Card>
-      </div>
-    )
-  }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => router.push('/dashboard')}
-          className="mb-4 -ml-2"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Dashboard
-        </Button>
-        <h1 className="text-3xl font-bold">Account Settings</h1>
-        <p className="text-muted-foreground mt-2">
-          Manage your account preferences and security settings.
-        </p>
-      </div>
+    <AuthGuard>
+    <div className="min-h-screen bg-background">
+      <PageHeader
+        title="Account Settings"
+        description="Manage your account preferences and security settings."
+        icon={UserCog}
+      />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-4">
@@ -74,6 +48,8 @@ export default function AccountPage() {
           <AccountDeletion />
         </TabsContent>
       </Tabs>
+      </div>
     </div>
+    </AuthGuard>
   )
 }

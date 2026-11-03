@@ -36,6 +36,13 @@ export function Navbar({ showUserMenu = true }: { showUserMenu?: boolean }) {
             Features
           </a>
           <Link
+            href="/pricing"
+            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+            data-testid="navbar-pricing"
+          >
+            Pricing
+          </Link>
+          <Link
             href="/docs"
             className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
             data-testid="navbar-docs"

@@ -33,6 +33,7 @@ import {
 } from '@/lib/falkordb'
 import { TestResultPanel } from './components/TestResultPanel'
 import { ConnectionList } from './components/ConnectionList'
+import { AuthGuard } from '@/app/auth/components/AuthGuard'
 
 type Mode = 'cloud' | 'self_hosted'
 
@@ -45,9 +46,9 @@ type Mode = 'cloud' | 'self_hosted'
  *
  * Both land in ONE backend model; `deploymentType` is reporting metadata only.
  *
- * Auth note: auth-middleware requires a signed-in user even to run a test, so
- * the form is fully visible and fillable while logged out (so an evaluator can
- * see exactly what is asked) but Test/Save prompt for sign-in and return here.
+ * Auth note: this page lives inside the auth-protected surface — the whole
+ * page is wrapped in AuthGuard, which redirects to sign-in when logged out
+ * (auth-middleware requires a signed-in user for every test/save/resolve).
  */
 export default function ByodbPage() {
   const { toast } = useToast()
@@ -249,6 +250,7 @@ export default function ByodbPage() {
   }
 
   return (
+    <AuthGuard>
     <div className="dark min-h-screen bg-background text-foreground">
       <Navbar showUserMenu={isAuthenticated} />
 
@@ -566,5 +568,6 @@ export default function ByodbPage() {
         )}
       </main>
     </div>
+    </AuthGuard>
   )
 }
