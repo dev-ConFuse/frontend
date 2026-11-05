@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 const features = [
   {
@@ -60,6 +61,17 @@ export const FeaturesSection = () => {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="mt-12 text-center">
+          <Link
+            href="/features"
+            className="inline-flex items-center text-sm font-medium text-foreground hover:underline"
+            data-testid="explore-all-features"
+          >
+            Explore all features
+            <ArrowRight className="w-4 h-4 ml-2" />
+          </Link>
         </div>
       </div>
     </section>

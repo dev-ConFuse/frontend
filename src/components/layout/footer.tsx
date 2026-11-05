@@ -26,12 +26,13 @@ export function Footer() {
           >
             Home
           </Link>
-          <a
-            href="#features"
+          <Link
+            href="/features"
             className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+            data-testid="footer-features"
           >
             Features
-          </a>
+          </Link>
           <Link
             href="/pricing"
             className="text-sm text-muted-foreground transition-colors hover:text-foreground"

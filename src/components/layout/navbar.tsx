@@ -29,12 +29,13 @@ export function Navbar({ showUserMenu = true }: { showUserMenu?: boolean }) {
         </Link>
 
         <nav className="hidden items-center gap-6 md:flex" data-testid="navbar-links">
-          <a
-            href="#features"
+          <Link
+            href="/features"
             className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+            data-testid="navbar-features"
           >
             Features
-          </a>
+          </Link>
           <Link
             href="/pricing"
             className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
