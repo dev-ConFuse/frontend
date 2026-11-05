@@ -5,7 +5,7 @@ import { ArrowRight } from "lucide-react";
 const features = [
   {
     title: "Multi-Source Connection",
-    description: "Integrate repositories and documentation natively. Seamlessly combine code and knowledge into a single source of truth.",
+    description: "Integrate repositories, documentation, and logs natively. Seamlessly combine code and knowledge into a single source of truth.",
     metric: "01"
   },
   {

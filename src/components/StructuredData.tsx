@@ -3,7 +3,7 @@ export function StructuredData() {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "ConFuse",
-    "description": "ConFuse is an AI-powered platform that unifies repositories and documentation for development teams building microservices.",
+    "description": "ConFuse is an AI-powered platform that unifies repositories, documentation, and logs for development teams building microservices.",
     "url": "https://www.confuse.site",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "Web",
@@ -33,7 +33,7 @@ export function StructuredData() {
         "name": "What is ConFuse?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "ConFuse is an AI-powered platform that unifies repositories and documentation for development teams building microservices."
+          "text": "ConFuse is an AI-powered platform that unifies repositories, documentation, and logs for development teams building microservices."
         }
       },
       {
@@ -49,7 +49,7 @@ export function StructuredData() {
         "name": "What integrations does ConFuse support?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "ConFuse supports 50+ integrations including GitHub, GitLab, Bitbucket, Notion, Slack, Figma, Google Drive, and many more. You can connect repositories, documentation, and external resources."
+          "text": "ConFuse supports 50+ integrations including GitHub, GitLab, Bitbucket, Notion, Slack, Figma, Google Drive, and many more. You can connect repositories, documentation, and logs."
         }
       },
       {

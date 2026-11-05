@@ -45,10 +45,10 @@ export function HeroSection() {
           <div className="space-y-6">
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-foreground leading-[1.1]">
               ConFuse: AI-powered <br />
-              repository unification.
+              context unification.
             </h1>
             <h2 className="text-xl text-muted-foreground max-w-2xl leading-relaxed font-medium">
-              An AI-powered platform that unifies repositories and documentation for development teams building microservices.
+              An AI-powered platform that unifies repositories, documentation, and logs for development teams building microservices.
             </h2>
           </div>
 
