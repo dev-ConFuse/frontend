@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { Button } from "@/components/ui/button";
@@ -212,12 +212,12 @@ export default function Dashboard() {
 
   return (
     <AuthGuard>
-      <div className="min-h-screen bg-background ambient-glow">
+      <div className="min-h-screen bg-background">
         <div className="border-b border-border bg-card/50 backdrop-blur-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-20">
               <div className="flex items-center space-x-3">
-                <h1 className="text-3xl md:text-4xl font-bold font-orbitron tracking-tight text-foreground">ConFuse</h1>
+                <h1 className="text-2xl font-bold tracking-tight text-foreground">ConFuse</h1>
               </div>
               <div className="flex items-center gap-4">
                 <ProfileAvatar />
@@ -240,7 +240,7 @@ export default function Dashboard() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
               <div className="grid lg:grid-cols-2 gap-12 mb-8">
                 <div>
-                  <h2 className="text-2xl font-semibold mb-6 bg-gradient-to-r from-primary via-sky-400 to-violet-400 bg-clip-text text-transparent">Quick Actions</h2>
+                  <h2 className="text-2xl font-semibold mb-6 text-foreground">Quick Actions</h2>
                   <div className="grid grid-cols-2 gap-4 mt-7">
                     {initialLoading ? (
                       Array.from({ length: 6 }).map((_, i) => (
@@ -259,110 +259,73 @@ export default function Dashboard() {
                           href: "/sources/repositories",
                           icon: GitBranch,
                           label: "Repository",
-                          buttonText: "Connect",
-                          gradient: "from-blue-500 to-purple-600",
-                          bgIcon: "bg-blue-500/10 text-blue-500 ring-1 ring-inset ring-blue-500/20",
-                          btnColor: "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg shadow-blue-500/30 transition-all duration-200 active:scale-[0.98]",
-                          glow: "hover:shadow-2xl hover:shadow-blue-500/20 hover:border-blue-500/60"
+                          buttonText: "Connect"
                         },
                         {
                           toggleId: "enableCloudLogs",
                           href: "/sources/logs",
                           icon: Terminal,
                           label: "Logs",
-                          buttonText: "Connect",
-                          gradient: "from-blue-600 to-indigo-700",
-                          bgIcon: "bg-blue-600/10 text-blue-600 ring-1 ring-inset ring-blue-600/20",
-                          btnColor: "bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white shadow-lg shadow-blue-600/30 transition-all duration-200 active:scale-[0.98]",
-                          glow: "hover:shadow-2xl hover:shadow-indigo-500/20 hover:border-indigo-500/60"
+                          buttonText: "Connect"
                         },
                         {
                           toggleId: "enableDocuments",
                           href: "/sources/documents",
                           icon: FileText,
                           label: "Documents",
-                          buttonText: "Add",
-                          gradient: "from-emerald-500 to-teal-600",
-                          bgIcon: "bg-emerald-500/10 text-emerald-500 ring-1 ring-inset ring-emerald-500/20",
-                          btnColor: "bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg shadow-emerald-500/30 transition-all duration-200 active:scale-[0.98]",
-                          glow: "hover:shadow-2xl hover:shadow-emerald-500/20 hover:border-emerald-500/60"
+                          buttonText: "Add"
                         },
                         {
                           toggleId: "enableURLs",
                           href: "/sources/urls",
                           icon: LinkIcon,
                           label: "URLs",
-                          buttonText: "Add",
-                          gradient: "from-orange-500 to-red-600",
-                          bgIcon: "bg-orange-500/10 text-orange-500 ring-1 ring-inset ring-orange-500/20",
-                          btnColor: "bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white shadow-lg shadow-orange-500/30 transition-all duration-200 active:scale-[0.98]",
-                          glow: "hover:shadow-2xl hover:shadow-orange-500/20 hover:border-orange-500/60"
+                          buttonText: "Add"
                         },
                         {
                           toggleId: "enableChats",
                           href: "/sources/chats",
                           icon: MessageSquare,
                           label: "Chats",
-                          buttonText: "Connect",
-                          gradient: "from-pink-500 to-rose-600",
-                          bgIcon: "bg-pink-500/10 text-pink-500 ring-1 ring-inset ring-pink-500/20",
-                          btnColor: "bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white shadow-lg shadow-pink-500/30 transition-all duration-200 active:scale-[0.98]",
-                          glow: "hover:shadow-2xl hover:shadow-pink-500/20 hover:border-pink-500/60"
+                          buttonText: "Connect"
                         },
                         {
                           toggleId: "enableDesign",
                           href: "/sources/design",
                           icon: PenTool,
                           label: "Design",
-                          buttonText: "Connect",
-                          gradient: "from-fuchsia-500 to-purple-600",
-                          bgIcon: "bg-fuchsia-500/10 text-fuchsia-500 ring-1 ring-inset ring-fuchsia-500/20",
-                          btnColor: "bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white shadow-lg shadow-fuchsia-500/30 transition-all duration-200 active:scale-[0.98]",
-                          glow: "hover:shadow-2xl hover:shadow-fuchsia-500/20 hover:border-fuchsia-500/60"
+                          buttonText: "Connect"
                         },
                         {
                           href: "/connections",
                           icon: Users,
                           label: "Connections",
-                          buttonText: "View",
-                          gradient: "from-amber-500 to-orange-600",
-                          bgIcon: "bg-amber-500/10 text-amber-500 ring-1 ring-inset ring-amber-500/20",
-                          btnColor: "bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white shadow-lg shadow-amber-500/30 transition-all duration-200 active:scale-[0.98]",
-                          glow: "hover:shadow-2xl hover:shadow-amber-500/20 hover:border-amber-500/60"
+                          buttonText: "View"
                         },
                         {
                           toggleId: "agentRules",
                           href: "/agents/rules",
                           icon: Network,
                           label: "Agent Rules",
-                          buttonText: "Configure",
-                          gradient: "from-cyan-500 to-blue-600",
-                          bgIcon: "bg-cyan-500/10 text-cyan-500 ring-1 ring-inset ring-cyan-500/20",
-                          btnColor: "bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white shadow-lg shadow-cyan-500/30 transition-all duration-200 active:scale-[0.98]",
-                          glow: "hover:shadow-2xl hover:shadow-cyan-500/20 hover:border-cyan-500/60"
+                          buttonText: "Configure"
                         },
                         {
                           href: "/docs",
                           icon: BookOpen,
                           label: "Documentation",
-                          buttonText: "View",
-                          gradient: "from-violet-500 to-purple-600",
-                          bgIcon: "bg-violet-500/10 text-violet-500 ring-1 ring-inset ring-violet-500/20",
-                          btnColor: "bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white shadow-lg shadow-violet-500/30 transition-all duration-200 active:scale-[0.98]",
-                          glow: "hover:shadow-2xl hover:shadow-violet-500/20 hover:border-violet-500/60"
+                          buttonText: "View"
                         }
                       ].filter(action => action.toggleId ? Boolean(toggles[action.toggleId]) : true).map((action, idx) => (
-                        <Card key={idx} className={`group relative overflow-hidden rounded-2xl border-border/60 bg-card/70 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1.5 ${action.glow}`}>
-                          <div className={`absolute inset-0 bg-gradient-to-br ${action.gradient} opacity-0 group-hover:opacity-15 transition-opacity duration-500 pointer-events-none`}></div>
-                          <CardContent className="p-5 relative z-10 flex flex-col justify-between h-full space-y-4">
+                        <Card key={idx} className="border-border bg-card">
+                          <CardContent className="p-5 flex flex-col justify-between h-full space-y-4">
                             <div className="flex items-center space-x-3">
-                              <div className={`p-2.5 rounded-lg ${action.bgIcon}`}>
+                              <div className="p-2 rounded-lg bg-muted text-muted-foreground">
                                 <action.icon className="w-5 h-5" />
                               </div>
                               <span className="font-semibold text-foreground">{action.label}</span>
                             </div>
                             <Link prefetch={false} href={action.href} target={action.href === '/docs' ? '_blank' : undefined} className="w-full">
-                              <Button className={`w-full shadow-md transition-all duration-300 ${action.btnColor}`}>
+                              <Button variant="outline" className="w-full">
                                 {action.buttonText}
                               </Button>
                             </Link>
@@ -373,7 +336,7 @@ export default function Dashboard() {
                 </div>
 
                 <div>
-                  <h2 className="text-2xl font-semibold mb-6 bg-gradient-to-r from-primary via-sky-400 to-violet-400 bg-clip-text text-transparent">Overview</h2>
+                  <h2 className="text-2xl font-semibold mb-6 text-foreground">Overview</h2>
                   <div className="flex flex-col xl:flex-row gap-6 items-start">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4 flex-1 w-full">
                       {initialLoading ? (
@@ -389,18 +352,15 @@ export default function Dashboard() {
                       ) : (
                         <>
                           {Boolean(toggles.enableRepositories) && (
-                            <Card className="group relative overflow-hidden rounded-2xl border-border/60 bg-card/70 backdrop-blur-sm transition-all duration-300 hover:border-blue-500/50 hover:shadow-xl hover:shadow-blue-500/10">
-                              <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-blue-500/10 blur-2xl transition-opacity duration-500 opacity-70 group-hover:opacity-100 pointer-events-none"></div>
+                            <Card className="border-border bg-card">
                               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-sm font-medium text-muted-foreground">
                                   Repositories
                                 </CardTitle>
-                                <div className="rounded-lg bg-blue-500/10 p-1.5 ring-1 ring-inset ring-blue-500/20">
-                                  <GitBranch className="w-4 h-4 text-blue-500" />
-                                </div>
+                                <GitBranch className="w-4 h-4 text-muted-foreground" />
                               </CardHeader>
                               <CardContent>
-                                <div className="text-3xl font-extrabold tracking-tight text-foreground">{loading ? '...' : stats.repositories}</div>
+                                <div className="text-2xl font-semibold tracking-tight text-foreground">{loading ? '...' : stats.repositories}</div>
                                 <p className="text-xs text-muted-foreground">
                                   Connected repos
                                 </p>
@@ -409,18 +369,15 @@ export default function Dashboard() {
                           )}
 
                           {Boolean(toggles.enableDocuments) && (
-                            <Card className="group relative overflow-hidden rounded-2xl border-border/60 bg-card/70 backdrop-blur-sm transition-all duration-300 hover:border-emerald-500/50 hover:shadow-xl hover:shadow-emerald-500/10">
-                              <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-emerald-500/10 blur-2xl transition-opacity duration-500 opacity-70 group-hover:opacity-100 pointer-events-none"></div>
+                            <Card className="border-border bg-card">
                               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-sm font-medium text-muted-foreground">
                                   Documents
                                 </CardTitle>
-                                <div className="rounded-lg bg-emerald-500/10 p-1.5 ring-1 ring-inset ring-emerald-500/20">
-                                  <FileText className="w-4 h-4 text-emerald-500" />
-                                </div>
+                                <FileText className="w-4 h-4 text-muted-foreground" />
                               </CardHeader>
                               <CardContent>
-                                <div className="text-3xl font-extrabold tracking-tight text-foreground">{loading ? '...' : stats.documents}</div>
+                                <div className="text-2xl font-semibold tracking-tight text-foreground">{loading ? '...' : stats.documents}</div>
                                 <p className="text-xs text-muted-foreground">
                                   Indexed documents
                                 </p>
@@ -429,18 +386,15 @@ export default function Dashboard() {
                           )}
 
                           {Boolean(toggles.enableURLs) && (
-                            <Card className="group relative overflow-hidden rounded-2xl border-border/60 bg-card/70 backdrop-blur-sm transition-all duration-300 hover:border-orange-500/50 hover:shadow-xl hover:shadow-orange-500/10">
-                              <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-orange-500/10 blur-2xl transition-opacity duration-500 opacity-70 group-hover:opacity-100 pointer-events-none"></div>
+                            <Card className="border-border bg-card">
                               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-sm font-medium text-muted-foreground">
                                   URLs
                                 </CardTitle>
-                                <div className="rounded-lg bg-orange-500/10 p-1.5 ring-1 ring-inset ring-orange-500/20">
-                                  <LinkIcon className="w-4 h-4 text-orange-500" />
-                                </div>
+                                <LinkIcon className="w-4 h-4 text-muted-foreground" />
                               </CardHeader>
                               <CardContent>
-                                <div className="text-3xl font-extrabold tracking-tight text-foreground">{loading ? '...' : stats.urls}</div>
+                                <div className="text-2xl font-semibold tracking-tight text-foreground">{loading ? '...' : stats.urls}</div>
                                 <p className="text-xs text-muted-foreground">
                                   Connected URLs
                                 </p>
@@ -449,18 +403,15 @@ export default function Dashboard() {
                           )}
 
                           {Boolean(toggles.enableCloudLogs) && (
-                            <Card className="group relative overflow-hidden rounded-2xl border-border/60 bg-card/70 backdrop-blur-sm transition-all duration-300 hover:border-indigo-500/50 hover:shadow-xl hover:shadow-indigo-500/10">
-                              <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-indigo-500/10 blur-2xl transition-opacity duration-500 opacity-70 group-hover:opacity-100 pointer-events-none"></div>
+                            <Card className="border-border bg-card">
                               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-sm font-medium text-muted-foreground">
                                   Logs
                                 </CardTitle>
-                                <div className="rounded-lg bg-indigo-500/10 p-1.5 ring-1 ring-inset ring-indigo-500/20">
-                                  <Terminal className="w-4 h-4 text-indigo-500" />
-                                </div>
+                                <Terminal className="w-4 h-4 text-muted-foreground" />
                               </CardHeader>
                               <CardContent>
-                                <div className="text-3xl font-extrabold tracking-tight text-foreground">{loading ? '...' : (stats.logs || 0).toLocaleString()}</div>
+                                <div className="text-2xl font-semibold tracking-tight text-foreground">{loading ? '...' : (stats.logs || 0).toLocaleString()}</div>
                                 <p className="text-xs text-muted-foreground">
                                   Processed entries
                                 </p>
@@ -468,18 +419,15 @@ export default function Dashboard() {
                             </Card>
                           )}
 
-                          <Card className="group relative overflow-hidden rounded-2xl border-border/60 bg-card/70 backdrop-blur-sm transition-all duration-300 hover:border-violet-500/50 hover:shadow-xl hover:shadow-violet-500/10">
-                            <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-violet-500/10 blur-2xl transition-opacity duration-500 opacity-70 group-hover:opacity-100 pointer-events-none"></div>
+                          <Card className="border-border bg-card">
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                               <CardTitle className="text-sm font-medium text-muted-foreground">
                                 Context Requests
                               </CardTitle>
-                              <div className="rounded-lg bg-violet-500/10 p-1.5 ring-1 ring-inset ring-violet-500/20">
-                                <Activity className="w-4 h-4 text-violet-500" />
-                              </div>
+                              <Activity className="w-4 h-4 text-muted-foreground" />
                             </CardHeader>
                             <CardContent>
-                              <div className="text-3xl font-extrabold tracking-tight text-foreground">{loading ? '...' : (stats.context_requests || 0).toLocaleString()}</div>
+                              <div className="text-2xl font-semibold tracking-tight text-foreground">{loading ? '...' : (stats.context_requests || 0).toLocaleString()}</div>
                               <p className="text-xs text-muted-foreground">
                                 Last 24 hours
                               </p>
@@ -489,15 +437,22 @@ export default function Dashboard() {
                       )}
                     </div>
 
-                    <div className="shrink-0 w-full xl:w-auto xl:min-w-[320px]">
-                      <TrustmaryWidget />
-                    </div>
+                    <Card className="shrink-0 w-full xl:w-auto xl:min-w-[320px] border-border bg-card">
+                      <CardHeader>
+                        <CardTitle className="text-sm font-medium text-muted-foreground">
+                          Feedback
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <TrustmaryWidget />
+                      </CardContent>
+                    </Card>
                   </div>
                 </div>
               </div>
 
               <div className="grid lg:grid-cols-2 gap-8">
-                <Card className="rounded-2xl border-border/60 bg-card/70 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:shadow-primary/10">
+                <Card className="border-border bg-card">
                   <CardHeader>
                     <div className="flex justify-between items-center">
                       <CardTitle className="text-lg font-semibold text-foreground">
@@ -565,7 +520,7 @@ export default function Dashboard() {
                         };
                         const IconComponent = getIcon(source.type);
                         return (
-                          <div key={source.id || index} className="group/item flex flex-col p-3 rounded-xl bg-muted/10 border border-border/40 gap-2 hover:border-primary/50 hover:bg-muted/20 hover:-translate-y-0.5 transition-all duration-200 relative">
+                          <div key={source.id || index} className="group/item flex flex-col p-3 rounded-xl bg-muted/10 border border-border/40 gap-2 hover:border-primary/50 hover:bg-muted/20 transition-all duration-200 relative">
                             <div className="flex items-center justify-between">
                               <Link href={source.type === 'url' ? '/sources/urls' : '/sources/repositories'} className="flex items-center space-x-3 flex-1 min-w-0">
                                 <IconComponent className="w-5 h-5 text-primary flex-shrink-0" />
@@ -588,7 +543,7 @@ export default function Dashboard() {
                               </div>
                             </div>
                             <div className="flex items-center space-x-2">
-                              <div className={`w-2 h-2 rounded-full ${source.status === 'active' || source.status === 'syncing' || source.status === 'pending' || source.status === 'connected' ? 'bg-green-500 shadow-lg shadow-green-500/50' : 'bg-gray-400'
+                              <div className={`w-2 h-2 rounded-full ${source.status === 'active' || source.status === 'syncing' || source.status === 'pending' || source.status === 'connected' ? 'bg-emerald-500' : 'bg-gray-400'
                                 }`}></div>
                               <div className="text-sm text-muted-foreground">
                                 Status: {source.status}
@@ -608,7 +563,7 @@ export default function Dashboard() {
                   </CardContent>
                 </Card>
 
-                <Card className="rounded-2xl border-border/60 bg-card/70 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:shadow-primary/10">
+                <Card className="border-border bg-card">
                   <CardHeader>
                     <CardTitle className="text-lg font-semibold text-foreground">
                       Recent Activity
@@ -629,7 +584,7 @@ export default function Dashboard() {
                       };
                       const IconComponent = getIcon(activity.type);
                       return (
-                        <div key={index} className="flex items-center space-x-3 p-3 rounded-xl bg-muted/10 border border-border/40 hover:border-primary/50 hover:bg-muted/20 hover:-translate-y-0.5 transition-all duration-200">
+                        <div key={index} className="flex items-center space-x-3 p-3 rounded-xl bg-muted/10 border border-border/40 hover:border-primary/50 hover:bg-muted/20 transition-all duration-200">
                           <div className="rounded-lg bg-primary/10 p-1.5">
                             <IconComponent className="w-4 h-4 text-primary" />
                           </div>
@@ -687,8 +642,8 @@ export default function Dashboard() {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {/* Native HTTP Card */}
-                  <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-5 flex flex-col">
-                    <h4 className="text-blue-500 font-semibold mb-3">Native (type: http)</h4>
+                  <div className="border-border bg-card rounded-lg p-5 flex flex-col">
+                    <h4 className="text-foreground font-semibold mb-3">Native (type: http)</h4>
                     <pre className="bg-background/80 p-3 rounded-md text-xs font-mono overflow-x-auto border border-border/50">
                       {`{
   "mcpServers": {
@@ -702,8 +657,8 @@ export default function Dashboard() {
                   </div>
 
                   {/* Native SSE Card */}
-                  <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-5 flex flex-col">
-                    <h4 className="text-emerald-500 font-semibold mb-3">Native (type: sse)</h4>
+                  <div className="border-border bg-card rounded-lg p-5 flex flex-col">
+                    <h4 className="text-foreground font-semibold mb-3">Native (type: sse)</h4>
                     <pre className="bg-background/80 p-3 rounded-md text-xs font-mono overflow-x-auto border border-border/50">
                       {`{
   "mcpServers": {
@@ -717,8 +672,8 @@ export default function Dashboard() {
                   </div>
 
                   {/* Stdio Proxy Card */}
-                  <div className="bg-purple-500/10 border border-purple-500/20 rounded-lg p-5 flex flex-col">
-                    <h4 className="text-purple-500 font-semibold mb-3">Stdio Proxy (CLI)</h4>
+                  <div className="border-border bg-card rounded-lg p-5 flex flex-col">
+                    <h4 className="text-foreground font-semibold mb-3">Stdio Proxy (CLI)</h4>
                     <pre className="bg-background/80 p-3 rounded-md text-xs font-mono overflow-x-auto border border-border/50">
                       {`{
   "mcpServers": {
