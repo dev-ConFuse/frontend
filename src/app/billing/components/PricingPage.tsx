@@ -9,7 +9,7 @@ export function PricingPage() {
   const plans = [
     {
       name: "Free",
-      price: "₹0",
+      price: "$0",
       period: "forever",
       description: "Perfect for individual developers and small personal projects",
       features: [
@@ -23,7 +23,7 @@ export function PricingPage() {
     },
     {
       name: "Pro",
-      price: "₹800",
+      price: "$17",
       period: "per month",
       description: "Ideal for power developers needing higher storage and queries",
       features: [
@@ -37,7 +37,7 @@ export function PricingPage() {
     },
     {
       name: "Team",
-      price: "₹2,300",
+      price: "$34",
       period: "per month",
       description: "Perfect for engineering teams with shared database access",
       features: [
@@ -52,8 +52,8 @@ export function PricingPage() {
     },
     {
       name: "Enterprise",
-      price: "₹4,000+",
-      period: "per month",
+      price: "Custom",
+      period: "",
       description: "For high-scale organizations needing custom quotas & SLA",
       features: [
         "Custom / Unlimited repos and documents",
@@ -63,7 +63,7 @@ export function PricingPage() {
         "Enterprise Security (SAML/SSO, Custom VPC/IP Isolation, Dedicated SLA)"
       ],
       popular: false,
-      buyUrl: "/billing"
+      buyUrl: "/contact"
     }
   ];
 
@@ -82,7 +82,7 @@ export function PricingPage() {
               <span className="text-primary"> Subscription Plan</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Connect your repositories and documents seamlessly with defined quotas and rock-solid security.
+              Connect your repositories, documentation, and logs seamlessly with defined quotas and rock-solid security.
             </p>
           </div>
         </section>
@@ -139,7 +139,7 @@ export function PricingPage() {
                         }`}
                         variant={plan.popular ? 'default' : 'outline'}
                       >
-                        {plan.name === 'Free' ? 'Get Started' : `Subscribe to ${plan.name}`}
+                        {plan.name === 'Free' ? 'Get Started' : plan.name === 'Enterprise' ? 'Contact Sales' : `Subscribe to ${plan.name}`}
                       </Button>
                     </a>
                   </CardContent>

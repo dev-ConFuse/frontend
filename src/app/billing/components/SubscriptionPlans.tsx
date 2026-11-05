@@ -220,7 +220,7 @@ export function SubscriptionPlans() {
               <CardTitle className="text-xl">{plan.name}</CardTitle>
               <CardDescription className="min-h-[40px] text-xs mt-1">{plan.description}</CardDescription>
               <div className="text-3xl font-bold mt-2">
-                {plan.formatted_price || (plan.price_monthly === 0 ? '₹0/month' : `₹${plan.price_monthly.toLocaleString()}/month`)}
+                {plan.formatted_price || (plan.price_monthly === 0 ? '$0/month' : `$${plan.price_monthly.toLocaleString()}/month`)}
               </div>
             </CardHeader>
 
@@ -238,7 +238,7 @@ export function SubscriptionPlans() {
                 className="w-full mt-4"
                 variant={isCurrentPlan(plan.tier) ? 'secondary' : plan.tier === 'pro' ? 'default' : 'outline'}
                 disabled={isCurrentPlan(plan.tier) || subscribing === plan.tier}
-                onClick={() => handleSubscribe(plan.tier)}
+                onClick={() => (plan.tier === 'enterprise' ? window.location.assign('/contact') : handleSubscribe(plan.tier))}
               >
                 {subscribing === plan.tier ? (
                   'Processing...'
@@ -246,6 +246,8 @@ export function SubscriptionPlans() {
                   'Current Plan'
                 ) : plan.tier === 'free' ? (
                   'Free Tier'
+                ) : plan.tier === 'enterprise' ? (
+                  'Contact Sales'
                 ) : (
                   `Subscribe (${plan.name})`
                 )}

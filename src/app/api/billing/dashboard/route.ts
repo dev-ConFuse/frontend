@@ -8,25 +8,25 @@ const PLAN_INFO: Record<string, { name: string; price_monthly: number; formatted
   free: {
     name: 'Free Plan',
     price_monthly: 0,
-    formatted_price: '₹0/month',
+    formatted_price: '$0/month',
     features: ['Up to 3 repos', 'Up to 4 documents', '256 MB max storage', '80,000 requests/mo'],
   },
   pro: {
     name: 'ConFuse Pro',
-    price_monthly: 800,
-    formatted_price: '₹800.00/month',
+    price_monthly: 17,
+    formatted_price: '$17.00/month',
     features: ['Up to 5 repos', 'Up to 10 documents', '512 MB max storage', '160,000 requests/mo'],
   },
   team: {
     name: 'ConFuse Team',
-    price_monthly: 2300,
-    formatted_price: '₹2,300.00/month',
+    price_monthly: 34,
+    formatted_price: '$34.00/month',
     features: ['Up to 10 repos', 'Up to 16 documents', '1,024 MB max storage', '320,000 requests/mo', 'Max 3 connected users'],
   },
   enterprise: {
     name: 'ConFuse Enterprise',
-    price_monthly: 4000,
-    formatted_price: '₹4,000.00+/month',
+    price_monthly: 0,
+    formatted_price: 'Custom',
     features: ['Custom / Unlimited repos', 'Custom documents', '5 GB+ storage', '1,000,000+ requests/mo', 'Unlimited users'],
   },
 }
