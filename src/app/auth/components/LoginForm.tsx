@@ -77,29 +77,40 @@ function SocialLoginButtons({ mode, onSocialLogin, disabled, showMicrosoft }: So
 export function LoginForm() {
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [showMicrosoft, setShowMicrosoft] = useState(false)
+  const [mode, setMode] = useState<'login' | 'register'>('login')
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
 
-  const { loginWithRedirect } = useAuth()
-
-  React.useEffect(() => {
-    import('@/lib/api').then(api => {
-      api.isToggleEnabled('enableMicrosoftAuth').then(setShowMicrosoft).catch(console.error)
-    })
-  }, [])
+  const { loginWithRedirect, login, register } = useAuth()
 
   const handleSocialLogin = async (provider: string) => {
-    console.log('🔘 Social login button clicked:', provider)
     setError('')
     setIsLoading(true)
 
     try {
-      console.log('🔄 Calling loginWithRedirect with provider:', provider)
       await loginWithRedirect(provider)
-      console.log('✅ loginWithRedirect completed')
     } catch (err) {
-      console.error('❌ Social login error:', err)
+      console.error('Social login error:', err)
       setIsLoading(false)
       setError(`Failed to sign in with ${provider}`)
+    }
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+    setIsLoading(true)
+    try {
+      if (mode === 'register') {
+        await register({ email, password, name })
+      } else {
+        await login(email, password)
+      }
+      // login/register navigate to /dashboard on success
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+      setIsLoading(false)
     }
   }
 
@@ -210,7 +221,7 @@ export function LoginForm() {
 
             {/* Error message */}
             {error && (
-              <div className="mb-6 p-3 text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg">
+              <div data-testid="login-error" role="alert" className="mb-6 p-3 text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg">
                 {error}
               </div>
             )}
@@ -219,16 +230,86 @@ export function LoginForm() {
             {isLoading && (
               <div className="mb-6 flex items-center gap-2 text-sm text-gray-500">
                 <div className="w-4 h-4 border-2 border-gray-200 border-t-gray-600 rounded-full animate-spin" />
-                Redirecting to Google...
+                Redirecting to your account...
               </div>
             )}
 
+            {/* Email / password */}
+            <form data-testid="login-form" onSubmit={handleSubmit} className="space-y-4">
+              {mode === 'register' && (
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Full name"
+                  autoComplete="name"
+                  required
+                  className="h-12 w-full rounded-lg border border-gray-200 px-4 text-base text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                />
+              )}
+              <input
+                type="email"
+                data-testid="email-input"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email address"
+                autoComplete="email"
+                required
+                className="h-12 w-full rounded-lg border border-gray-200 px-4 text-base text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+              />
+              <input
+                type="password"
+                data-testid="password-input"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
+                required
+                minLength={mode === 'register' ? 8 : undefined}
+                className="h-12 w-full rounded-lg border border-gray-200 px-4 text-base text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+              />
+              {mode === 'login' && (
+                <div className="flex justify-end">
+                  <Link href="/auth/forgot-password" className="text-sm font-medium text-blue-600 hover:text-blue-500 transition-colors">
+                    Forgot password?
+                  </Link>
+                </div>
+              )}
+              <Button
+                type="submit"
+                data-testid="login-button"
+                disabled={isLoading}
+                className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-base font-medium transition-colors"
+              >
+                {mode === 'register' ? 'Create Account' : 'Log In'}
+              </Button>
+            </form>
+
+            {/* Login / register toggle */}
+            <div className="mt-4 text-center text-sm text-gray-600">
+              {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
+              <button
+                type="button"
+                onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError('') }}
+                className="font-medium text-blue-600 hover:text-blue-500 transition-colors"
+              >
+                {mode === 'login' ? 'Sign up' : 'Log in'}
+              </button>
+            </div>
+
+            {/* Divider */}
+            <div className="my-6 flex items-center gap-3">
+              <div className="h-px flex-1 bg-gray-200" />
+              <span className="text-xs text-gray-400">OR</span>
+              <div className="h-px flex-1 bg-gray-200" />
+            </div>
+
             {/* Social Login */}
             <SocialLoginButtons
-              mode="login"
+              mode={mode}
               onSocialLogin={handleSocialLogin}
               disabled={isLoading}
-              showMicrosoft={showMicrosoft}
+              showMicrosoft
             />
 
             {/* Divider text */}
