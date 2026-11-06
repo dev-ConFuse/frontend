@@ -33,6 +33,7 @@ import {
   GitBranch,
   FileText,
   Link as LinkIcon,
+  BookOpen,
   Globe,
   PenTool,
   Terminal
@@ -230,7 +231,7 @@ export default function Dashboard() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <TabsList className="bg-transparent h-12 p-0 rounded-none w-full justify-start border-none mt-2">
                 <TabsTrigger value="overview" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-6 h-12 text-sm font-medium text-muted-foreground hover:text-foreground data-[state=active]:text-primary transition-colors duration-200">Overview</TabsTrigger>
-                <TabsTrigger value="agents" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-6 h-12 text-sm font-medium text-muted-foreground hover:text-foreground data-[state=active]:text-primary transition-colors duration-200">Agents Config</TabsTrigger>
+                <TabsTrigger value="agents" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-6 h-12 text-sm font-medium text-muted-foreground hover:text-foreground data-[state=active]:text-primary transition-colors duration-200">Config</TabsTrigger>
               </TabsList>
             </div>
           </div>
@@ -441,7 +442,10 @@ export default function Dashboard() {
                       )}
                     </div>
 
-                    <div className="shrink-0 w-full xl:w-auto xl:min-w-[320px] flex flex-col gap-6">
+                    {/* Fixed 340px column at xl: content-sized width (w-auto)
+                        let the long docs copy balloon the panel past the
+                        container and squeeze the stats grid behind it. */}
+                    <div className="shrink-0 w-full xl:w-[340px] flex flex-col gap-6">
                       <Card className="border-border bg-card">
                         <CardHeader>
                           <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -457,21 +461,23 @@ export default function Dashboard() {
                           keep it visually secondary under Feedback. */}
                       <Card className="border-border bg-card" data-testid="docs-card">
                         <CardHeader>
-                          <CardTitle className="text-sm font-medium text-muted-foreground">
-                            Documentation
-                          </CardTitle>
+                          <div className="flex items-center gap-3">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-600/10">
+                              <BookOpen className="h-5 w-5 text-indigo-500" />
+                            </div>
+                            <CardTitle className="text-base font-semibold text-foreground">
+                              Documentation
+                            </CardTitle>
+                          </div>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-sm text-muted-foreground leading-relaxed">
                             Guides, concepts, and API references — everything you
                             need to get the most out of ConFuse.
                           </p>
-                          <Link prefetch={false} href="/docs" target="_blank" className="w-full">
-                            <Button
-                              variant="outline"
-                              className="w-full border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-colors"
-                            >
-                              View Documentation
+                          <Link prefetch={false} href="/docs" target="_blank">
+                            <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white transition-colors">
+                              View Documentation →
                             </Button>
                           </Link>
                         </CardContent>
@@ -670,11 +676,11 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                   {/* Native HTTP Card */}
-                  <div className="border-border bg-card rounded-lg p-5 flex flex-col">
-                    <h4 className="text-foreground font-semibold mb-3">Native (type: http)</h4>
-                    <pre className="bg-background/80 p-3 rounded-md text-xs font-mono overflow-x-auto border border-border/50">
+                  <div className="border-border bg-card rounded-xl p-6 flex flex-col shadow-sm">
+                    <h4 className="text-foreground font-semibold text-base mb-4">Native (type: http)</h4>
+                    <pre className="flex-1 min-h-[200px] bg-background/80 p-5 rounded-lg text-sm leading-relaxed font-mono whitespace-pre-wrap break-all border border-border/50">
                       {`{
   "mcpServers": {
     "ConFuse": {
@@ -687,9 +693,9 @@ export default function Dashboard() {
                   </div>
 
                   {/* Native SSE Card */}
-                  <div className="border-border bg-card rounded-lg p-5 flex flex-col">
-                    <h4 className="text-foreground font-semibold mb-3">Native (type: sse)</h4>
-                    <pre className="bg-background/80 p-3 rounded-md text-xs font-mono overflow-x-auto border border-border/50">
+                  <div className="border-border bg-card rounded-xl p-6 flex flex-col shadow-sm">
+                    <h4 className="text-foreground font-semibold text-base mb-4">Native (type: sse)</h4>
+                    <pre className="flex-1 min-h-[200px] bg-background/80 p-5 rounded-lg text-sm leading-relaxed font-mono whitespace-pre-wrap break-all border border-border/50">
                       {`{
   "mcpServers": {
     "ConFuse": {
@@ -702,9 +708,9 @@ export default function Dashboard() {
                   </div>
 
                   {/* Stdio Proxy Card */}
-                  <div className="border-border bg-card rounded-lg p-5 flex flex-col">
-                    <h4 className="text-foreground font-semibold mb-3">Stdio Proxy (CLI)</h4>
-                    <pre className="bg-background/80 p-3 rounded-md text-xs font-mono overflow-x-auto border border-border/50">
+                  <div className="border-border bg-card rounded-xl p-6 flex flex-col shadow-sm">
+                    <h4 className="text-foreground font-semibold text-base mb-4">Stdio Proxy (CLI)</h4>
+                    <pre className="flex-1 min-h-[200px] bg-background/80 p-5 rounded-lg text-sm leading-relaxed font-mono whitespace-pre-wrap break-all border border-border/50">
                       {`{
   "mcpServers": {
     "ConFuse": {

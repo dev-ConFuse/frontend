@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/auth'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Check, Star, Zap, Building, Crown } from 'lucide-react'
+import { Check } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 
 interface SubscriptionPlan {
@@ -62,10 +62,13 @@ export function SubscriptionPlans() {
   }
 
   const handleSubscribe = async (tier: string) => {
-    if (tier === 'free') return
+    if (tier === 'enterprise') return
     setSubscribing(tier)
     try {
-      const response = await fetch('/api/billing/checkout', {
+      // Complete tier update: persist the new tier server-side through the
+      // BFF proxy to the auth-middleware upgrade endpoint, then reflect the
+      // fresh subscription state (Active Plan badge, buttons, limits).
+      const response = await fetch('/api/billing/upgrade', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -73,23 +76,20 @@ export function SubscriptionPlans() {
         },
         body: JSON.stringify({ tier }),
       })
+      const resData = await response.json().catch(() => null)
 
-      if (response.ok) {
-        const resData = await response.json()
-        const checkoutUrl = resData?.data?.checkoutUrl
-        if (checkoutUrl) {
-          toast({
-            title: 'Redirecting to Checkout',
-            description: 'Please complete your subscription payment.',
-          })
-          window.location.href = checkoutUrl
-          return
-        }
+      if (response.ok && resData?.success) {
+        toast({
+          title: 'Plan Updated',
+          description: `Your workspace is now on the ${tier.toUpperCase()} plan.`,
+        })
+        await fetchCurrentSubscription()
+        return
       }
 
       toast({
-        title: 'Checkout Failed',
-        description: 'Could not generate checkout link. Please try again.',
+        title: 'Upgrade Failed',
+        description: resData?.error || 'Could not update your plan. Please try again.',
         variant: 'destructive',
       })
     } catch (error) {
@@ -126,21 +126,6 @@ export function SubscriptionPlans() {
       window.location.href = '/billing'
     } finally {
       setPortalLoading(false)
-    }
-  }
-
-  const getPlanIcon = (tier: string) => {
-    switch (tier) {
-      case 'free':
-        return <Star className="h-6 w-6 text-blue-400" />
-      case 'pro':
-        return <Zap className="h-6 w-6 text-amber-500" />
-      case 'team':
-        return <Building className="h-6 w-6 text-emerald-500" />
-      case 'enterprise':
-        return <Crown className="h-6 w-6 text-purple-500" />
-      default:
-        return <Star className="h-6 w-6 text-blue-400" />
     }
   }
 
@@ -214,9 +199,6 @@ export function SubscriptionPlans() {
             )}
             
             <CardHeader className="text-center">
-              <div className="flex justify-center mb-2">
-                {getPlanIcon(plan.tier)}
-              </div>
               <CardTitle className="text-xl">{plan.name}</CardTitle>
               <CardDescription className="min-h-[40px] text-xs mt-1">{plan.description}</CardDescription>
               <div className="text-3xl font-bold mt-2">
@@ -245,7 +227,7 @@ export function SubscriptionPlans() {
                 ) : isCurrentPlan(plan.tier) ? (
                   'Current Plan'
                 ) : plan.tier === 'free' ? (
-                  'Free Tier'
+                  'Switch to Free'
                 ) : plan.tier === 'enterprise' ? (
                   'Contact Sales'
                 ) : (
