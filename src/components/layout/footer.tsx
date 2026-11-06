@@ -27,7 +27,7 @@ export function Footer() {
             Home
           </Link>
           <Link
-            href="/features"
+            href="/#features"
             className="text-sm text-muted-foreground transition-colors hover:text-foreground"
             data-testid="footer-features"
           >

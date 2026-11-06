@@ -36,7 +36,7 @@ export default function AboutPage() {
         </div>
 
         <div className="mt-12 flex gap-4">
-          <Link href="/features" className="bg-primary text-primary-foreground px-5 py-2.5 rounded-lg font-medium hover:opacity-90 transition-opacity text-sm">
+          <Link href="/#features" className="bg-primary text-primary-foreground px-5 py-2.5 rounded-lg font-medium hover:opacity-90 transition-opacity text-sm">
             See Features
           </Link>
           <Link href="/contact" className="border border-border px-5 py-2.5 rounded-lg font-medium hover:border-primary/50 transition-colors text-sm text-foreground">

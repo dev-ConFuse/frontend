@@ -33,7 +33,6 @@ import {
   GitBranch,
   FileText,
   Link as LinkIcon,
-  BookOpen,
   Globe,
   PenTool,
   Terminal
@@ -259,61 +258,63 @@ export default function Dashboard() {
                           href: "/sources/repositories",
                           icon: GitBranch,
                           label: "Repository",
-                          buttonText: "Connect"
+                          buttonText: "Connect",
+                          btnColor: "bg-indigo-600 hover:bg-indigo-700"
                         },
                         {
                           toggleId: "enableCloudLogs",
                           href: "/sources/logs",
                           icon: Terminal,
                           label: "Logs",
-                          buttonText: "Connect"
+                          buttonText: "Connect",
+                          btnColor: "bg-sky-600 hover:bg-sky-700"
                         },
                         {
                           toggleId: "enableDocuments",
                           href: "/sources/documents",
                           icon: FileText,
                           label: "Documents",
-                          buttonText: "Add"
+                          buttonText: "Add",
+                          btnColor: "bg-emerald-600 hover:bg-emerald-700"
                         },
                         {
                           toggleId: "enableURLs",
                           href: "/sources/urls",
                           icon: LinkIcon,
                           label: "URLs",
-                          buttonText: "Add"
+                          buttonText: "Add",
+                          btnColor: "bg-amber-500 hover:bg-amber-600"
                         },
                         {
                           toggleId: "enableChats",
                           href: "/sources/chats",
                           icon: MessageSquare,
                           label: "Chats",
-                          buttonText: "Connect"
+                          buttonText: "Connect",
+                          btnColor: "bg-rose-600 hover:bg-rose-700"
                         },
                         {
                           toggleId: "enableDesign",
                           href: "/sources/design",
                           icon: PenTool,
                           label: "Design",
-                          buttonText: "Connect"
+                          buttonText: "Connect",
+                          btnColor: "bg-fuchsia-600 hover:bg-fuchsia-700"
                         },
                         {
                           href: "/connections",
                           icon: Users,
                           label: "Connections",
-                          buttonText: "View"
+                          buttonText: "View",
+                          btnColor: "bg-violet-600 hover:bg-violet-700"
                         },
                         {
                           toggleId: "agentRules",
                           href: "/agents/rules",
                           icon: Network,
                           label: "Agent Rules",
-                          buttonText: "Configure"
-                        },
-                        {
-                          href: "/docs",
-                          icon: BookOpen,
-                          label: "Documentation",
-                          buttonText: "View"
+                          buttonText: "Configure",
+                          btnColor: "bg-teal-600 hover:bg-teal-700"
                         }
                       ].filter(action => action.toggleId ? Boolean(toggles[action.toggleId]) : true).map((action, idx) => (
                         <Card key={idx} className="border-border bg-card">
@@ -324,8 +325,11 @@ export default function Dashboard() {
                               </div>
                               <span className="font-semibold text-foreground">{action.label}</span>
                             </div>
-                            <Link prefetch={false} href={action.href} target={action.href === '/docs' ? '_blank' : undefined} className="w-full">
-                              <Button variant="outline" className="w-full">
+                            <Link prefetch={false} href={action.href} className="w-full">
+                              {/* Fixed (non-token) colors: identical in dark and
+                                  light mode — these CTAs are the one place the
+                                  dashboard deliberately opts out of theming. */}
+                              <Button className={`w-full text-white transition-colors ${action.btnColor}`}>
                                 {action.buttonText}
                               </Button>
                             </Link>
@@ -437,16 +441,42 @@ export default function Dashboard() {
                       )}
                     </div>
 
-                    <Card className="shrink-0 w-full xl:w-auto xl:min-w-[320px] border-border bg-card">
-                      <CardHeader>
-                        <CardTitle className="text-sm font-medium text-muted-foreground">
-                          Feedback
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <TrustmaryWidget />
-                      </CardContent>
-                    </Card>
+                    <div className="shrink-0 w-full xl:w-auto xl:min-w-[320px] flex flex-col gap-6">
+                      <Card className="border-border bg-card">
+                        <CardHeader>
+                          <CardTitle className="text-sm font-medium text-muted-foreground">
+                            Feedback
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <TrustmaryWidget />
+                        </CardContent>
+                      </Card>
+                      {/* Docs live here (NOT in Quick Actions): documentation is
+                          reference material, not an active product feature —
+                          keep it visually secondary under Feedback. */}
+                      <Card className="border-border bg-card" data-testid="docs-card">
+                        <CardHeader>
+                          <CardTitle className="text-sm font-medium text-muted-foreground">
+                            Documentation
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          <p className="text-sm text-muted-foreground">
+                            Guides, concepts, and API references — everything you
+                            need to get the most out of ConFuse.
+                          </p>
+                          <Link prefetch={false} href="/docs" target="_blank" className="w-full">
+                            <Button
+                              variant="outline"
+                              className="w-full border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-colors"
+                            >
+                              View Documentation
+                            </Button>
+                          </Link>
+                        </CardContent>
+                      </Card>
+                    </div>
                   </div>
                 </div>
               </div>

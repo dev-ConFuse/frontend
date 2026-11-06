@@ -68,7 +68,7 @@ export function PricingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="pricing-sea min-h-screen bg-background">
       <Navbar />
       
       <main className="pt-20">

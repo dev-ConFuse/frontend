@@ -159,3 +159,82 @@
 }
 /* Ambient dashboard backdrop: soft brand-colored glow behind the dark UI */
 .ambient-glow { background-image: radial-gradient(1000px 500px at 15% -5%, rgba(59, 130, 246, 0.14), transparent), radial-gradient(800px 450px at 85% 0%, rgba(168, 85, 247, 0.12), transparent), radial-gradient(700px 400px at 50% 110%, rgba(16, 185, 129, 0.07), transparent); }
+
+/* ── Landing theme (scoped: '/' only) ─────────────────────────────────────
+   WHY: the marketing landing is the ONE light surface on the platform
+   (#BAADD1 lavender, per product direction); every other route keeps the
+   standard dark theme. Scoping the design tokens here re-themes everything
+   inside the wrapper (incl. shared Navbar/Footer) without touching them. */
+.landing {
+  --background: 262 28% 75%;          /* #BAADD1 */
+  --foreground: 262 45% 16%;
+  --card: 262 32% 87%;
+  --card-foreground: 262 45% 16%;
+  --popover: 262 32% 87%;
+  --popover-foreground: 262 45% 16%;
+  --primary: 262 47% 30%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 262 26% 88%;
+  --secondary-foreground: 262 45% 16%;
+  --muted: 262 24% 84%;
+  --muted-foreground: 262 18% 36%;
+  --accent: 262 30% 89%;
+  --accent-foreground: 262 45% 16%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 262 22% 62%;
+  --input: 262 22% 62%;
+  --ring: 262 47% 30%;
+}
+
+/* Unauthenticated pricing surface (/pricing + the signed-out /billing view):
+   warm seashell #FFF5EE backdrop with white cards and a terracotta accent.
+   Scoped so every token-driven child (Navbar, Footer, Cards, Buttons) stays
+   readable; signed-in surfaces keep their themes. */
+.pricing-sea {
+  --background: 24.7 100% 96.7%;     /* #FFF5EE */
+  --foreground: 24 45% 14%;
+  --card: 0 0% 100%;
+  --card-foreground: 24 45% 14%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 24 45% 14%;
+  --primary: 18 72% 40%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 24 40% 91%;
+  --secondary-foreground: 24 45% 14%;
+  --muted: 24 40% 90%;
+  --muted-foreground: 24 22% 34%;
+  --accent: 24 45% 89%;
+  --accent-foreground: 24 45% 14%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 24 35% 78%;
+  --input: 24 35% 78%;
+  --ring: 18 72% 40%;
+}
+
+/* Landing motion vocabulary (CSS-only; stagger via inline delays) */
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-18px) rotate(2deg); }
+}
+
+@keyframes float-slower {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(14px) rotate(-2deg); }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.06); }
+}
+
+@keyframes gradient-x {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
