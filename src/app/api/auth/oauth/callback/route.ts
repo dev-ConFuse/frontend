@@ -50,7 +50,9 @@ export async function GET(request: NextRequest) {
   const provider = (state?.split(':')[0] ?? '').toLowerCase()
 
   const redirectWith = (params: Record<string, string>) => {
-    const target = new URL('/connectors', request.url)
+    // /connections is the real connectors surface — there is no /connectors
+    // route (it 404s, which broke every completed provider OAuth flow).
+    const target = new URL('/connections', request.url)
     for (const [key, value] of Object.entries(params)) {
       target.searchParams.set(key, value)
     }
