@@ -20,15 +20,15 @@ export default async function DocumentationIndex() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
+      <Navbar showUserMenu={false} showAuth={false} />
 
       <main>
         <section className="py-24 bg-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center space-y-8">
-              <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full shadow-lg mx-auto">
-                <BookOpen className="w-5 h-5 mr-2 text-white" />
-                <span className="text-white font-bold text-lg">Documentation</span>
+              <div className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-full shadow-lg mx-auto">
+                <BookOpen className="w-5 h-5 mr-2" />
+                <span className="font-bold text-lg">Documentation</span>
               </div>
               <h1 className="text-5xl md:text-6xl font-bold text-center mb-6">
                 <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Complete Documentation</span>
@@ -63,8 +63,8 @@ export default async function DocumentationIndex() {
                       )}
                       
                       <div className="mt-auto pt-4">
-                        <div className="inline-flex items-center text-sm font-medium text-primary">
-                          Read Document <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
+                        <div className="inline-flex items-center gap-1 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors group-hover:bg-primary/90">
+                          Read Document <span className="group-hover:translate-x-1 transition-transform">→</span>
                         </div>
                       </div>
                     </div>

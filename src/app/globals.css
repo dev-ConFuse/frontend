@@ -213,6 +213,31 @@
   --ring: 18 72% 40%;
 }
 
+/* Documentation surface (/docs index + /docs/[slug] articles): warm dark
+   salmon #E9967A backdrop with white cards. Applied from docs/layout.tsx so
+   every current and future docs page inherits it. */
+.docs-salmon {
+  --background: 15.13 71.61% 69.61%;   /* #E9967A */
+  --foreground: 15 50% 13%;
+  --card: 0 0% 100%;
+  --card-foreground: 15 50% 13%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 15 50% 13%;
+  --primary: 15 70% 30%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 15 55% 82%;
+  --secondary-foreground: 15 50% 13%;
+  --muted: 15 55% 80%;
+  --muted-foreground: 15 30% 28%;
+  --accent: 15 60% 80%;
+  --accent-foreground: 15 50% 13%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 15 40% 50%;
+  --input: 15 40% 50%;
+  --ring: 15 70% 30%;
+}
+
 /* Landing motion vocabulary (CSS-only; stagger via inline delays) */
 @keyframes float-slow {
   0%, 100% { transform: translateY(0) rotate(0deg); }

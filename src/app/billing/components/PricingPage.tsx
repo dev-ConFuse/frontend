@@ -24,7 +24,7 @@ export function PricingPage() {
     {
       name: "Pro",
       price: "$17",
-      period: "per month",
+      period: "per user per month",
       description: "Ideal for power developers needing higher storage and queries",
       features: [
         "5 repos, 10 documents",
@@ -38,7 +38,7 @@ export function PricingPage() {
     {
       name: "Team",
       price: "$34",
-      period: "per month",
+      period: "per user per month",
       description: "Perfect for engineering teams with shared database access",
       features: [
         "10 repos, 16 documents",

@@ -39,10 +39,10 @@ export default async function DocPage({ params }: { params: Promise<{ slug: stri
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
+      <Navbar showUserMenu={false} showAuth={false} />
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <Link href="/docs" className="inline-block mb-8">
-          <Button variant="ghost" className="hover:bg-primary/5">
+          <Button variant="outline" className="border-primary bg-card text-primary hover:bg-primary hover:text-primary-foreground">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Documentation
           </Button>

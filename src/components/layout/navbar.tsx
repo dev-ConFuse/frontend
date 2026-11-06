@@ -7,10 +7,11 @@ import { Button } from '@/components/ui/button'
 /**
  * Global marketing/navigation bar.
  *
- * `showUserMenu` renders the authenticated user controls; the unauthenticated
- * landing keeps a minimal conversion-focused bar.
+ * `showUserMenu` renders the authenticated user controls; `showAuth` gates the
+ * whole auth area (Sign In included) for surfaces like docs that keep a
+ * navigation-only bar. Every other page keeps the default behaviour.
  */
-export function Navbar({ showUserMenu = true }: { showUserMenu?: boolean }) {
+export function Navbar({ showUserMenu = true, showAuth = true }: { showUserMenu?: boolean; showAuth?: boolean }) {
   const { user, isAuthenticated, isLoading, loginWithRedirect, logout } =
     useAuth()
 
@@ -53,37 +54,38 @@ export function Navbar({ showUserMenu = true }: { showUserMenu?: boolean }) {
         </nav>
 
         <div className="flex items-center gap-3" data-testid="navbar-actions">
-          {showUserMenu && isAuthenticated ? (
-            <>
-              <span
-                className="hidden max-w-[160px] truncate text-sm text-muted-foreground sm:block"
-                data-testid="navbar-user"
-              >
-                {user?.name || user?.email}
-              </span>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={logout}
-                data-testid="navbar-sign-out"
-              >
-                Sign Out
-              </Button>
-            </>
-          ) : (
-            <>
-              {!isLoading && !isAuthenticated ? (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => void loginWithRedirect()}
-                  data-testid="navbar-sign-in"
+          {showAuth &&
+            (showUserMenu && isAuthenticated ? (
+              <>
+                <span
+                  className="hidden max-w-[160px] truncate text-sm text-muted-foreground sm:block"
+                  data-testid="navbar-user"
                 >
-                  Sign In
+                  {user?.name || user?.email}
+                </span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={logout}
+                  data-testid="navbar-sign-out"
+                >
+                  Sign Out
                 </Button>
-              ) : null}
-            </>
-          )}
+              </>
+            ) : (
+              <>
+                {!isLoading && !isAuthenticated ? (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => void loginWithRedirect()}
+                    data-testid="navbar-sign-in"
+                  >
+                    Sign In
+                  </Button>
+                ) : null}
+              </>
+            ))}
         </div>
       </div>
     </header>
