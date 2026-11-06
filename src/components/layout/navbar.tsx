@@ -78,7 +78,9 @@ export function Navbar({ showUserMenu = true, showAuth = true }: { showUserMenu?
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => void loginWithRedirect()}
+                    onClick={() => {
+                      window.location.href = '/auth/login'
+                    }}
                     data-testid="navbar-sign-in"
                   >
                     Sign In

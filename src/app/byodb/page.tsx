@@ -52,7 +52,7 @@ type Mode = 'cloud' | 'self_hosted'
  */
 export default function ByodbPage() {
   const { toast } = useToast()
-  const { isAuthenticated, isLoading, loginWithRedirect } = useAuth()
+  const { isAuthenticated, isLoading } = useAuth()
 
   const [mode, setMode] = useState<Mode>('cloud')
 
@@ -144,7 +144,7 @@ export default function ByodbPage() {
   /** Test/Save are auth-gated; send a signed-out visitor to sign in first. */
   function requireAuth(): boolean {
     if (isAuthenticated) return true
-    void loginWithRedirect()
+    window.location.href = '/auth/login'
     return false
   }
 
@@ -310,7 +310,7 @@ export default function ByodbPage() {
                 Fill in the details below, then sign in to test and save the connection. Your
                 entries stay on this page while you sign in.
               </p>
-              <Button onClick={() => void loginWithRedirect()} className="rounded-none">
+              <Button onClick={() => { window.location.href = '/auth/login' }} className="rounded-none">
                 Sign in to continue
                 <LogIn className="h-4 w-4 ml-2" aria-hidden="true" />
               </Button>
