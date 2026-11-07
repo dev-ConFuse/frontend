@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
-import { User, LogOut, CreditCard, Database, Sun, Moon } from "lucide-react";
+import { User, LogOut, CreditCard, Sun, Moon } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from '@/contexts/auth';
 import { useTheme } from "next-themes";
@@ -79,12 +79,6 @@ export function ProfileAvatar() {
             <Link href="/billing" className="cursor-pointer">
               <CreditCard className="mr-3 h-5 w-5" />
               <span>Usage & Subs</span>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild className="py-3 px-4 text-base">
-            <Link href="/byodb" className="cursor-pointer">
-              <Database className="mr-3 h-5 w-5" />
-              <span>BYODB</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />

@@ -9,6 +9,7 @@ import dynamic from 'next/dynamic';
 
 const Footer = dynamic(() => import("@/components/layout/footer").then(mod => mod.Footer));
 import { AuthGuard } from "@/app/auth/components/AuthGuard";
+import { GraphSetupCard } from "@/app/dashboard/components/GraphSetupCard";
 import { getSources, deleteUrl, deleteRepository, authClient, getDashboardStats, getRepositories } from "@/lib/api";
 import { useToggles } from "@/contexts/toggle";
 import { useToast } from "@/hooks/use-toast";
@@ -34,6 +35,7 @@ import {
   FileText,
   Link as LinkIcon,
   BookOpen,
+  Database,
   Globe,
   PenTool,
   Terminal
@@ -238,6 +240,7 @@ export default function Dashboard() {
 
           <TabsContent value="overview" className="m-0 border-none outline-none">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+              <GraphSetupCard />
               <div className="grid lg:grid-cols-2 gap-12 mb-8">
                 <div>
                   <h2 className="text-2xl font-semibold mb-6 text-foreground">Quick Actions</h2>
@@ -308,6 +311,13 @@ export default function Dashboard() {
                           label: "Connections",
                           buttonText: "View",
                           btnColor: "bg-violet-600 hover:bg-violet-700"
+                        },
+                        {
+                          href: "/byodb",
+                          icon: Database,
+                          label: "BYODB",
+                          buttonText: "Connect",
+                          btnColor: "bg-orange-600 hover:bg-orange-700"
                         },
                         {
                           toggleId: "agentRules",
