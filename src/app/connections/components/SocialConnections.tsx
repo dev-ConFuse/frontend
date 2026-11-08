@@ -55,8 +55,7 @@ export function SocialConnections() {
   const [emailDialogOpen, setEmailDialogOpen] = useState(false);
   const [emailDialogPlatform, setEmailDialogPlatform] = useState<string | null>(null);
   const { toggles, ready: togglesReady } = useToggles();
-  // Use a Set in a ref to track codes that have been processed (prevents duplicate exchanges)
-  const processedCodesRef = useRef<Set<string>>(new Set());
+
   // Track whether initial load has completed to avoid skeleton flash on subsequent fetches
   const hasLoadedRef = useRef(false);
   const { toast } = useToast();
@@ -116,120 +115,94 @@ export function SocialConnections() {
 
   useEffect(() => {
     fetchConnections({ initial: true });
-    const handler = async (e: MessageEvent) => {
+    const handler = (e: MessageEvent) => {
       const dataUnknown: unknown = e.data
       if (typeof dataUnknown !== 'object' || dataUnknown === null || !('type' in dataUnknown)) {
         return
       }
 
-      const data = dataUnknown as { type: string; provider?: string; code?: string; error?: string; state?: string }
+      const data = dataUnknown as { type: string; provider?: string; status?: string; error?: string }
+      if (data.type !== 'oauth-result') return
 
-      if (data.type === 'oauth-code' && data.provider && data.code) {
-        // Prevent duplicate exchange calls - OAuth codes are single-use
-        const codeKey = `${data.provider}:${data.code}`
-        if (processedCodesRef.current.has(codeKey)) {
-          // OAuth code already processed, skipping duplicate (not logging to avoid huge string dumps)
-          return
-        }
-        processedCodesRef.current.add(codeKey)
-
-        // New: popup sent us the code, we do the exchange here (we have the token)
-        // IMPORTANT: Use the same token source as other API calls (useAuth's token)
-        // to ensure consistent user_id across all flows. Fall back to localStorage
-        // only if useAuth token is not yet available.
-        try {
-          const effectiveToken = token || localStorage.getItem('confuse_auth_token')
-          if (!effectiveToken) {
-            toast({
-              title: "Error",
-              description: "Please log in first before connecting accounts",
-              variant: "destructive"
-            })
-            return
-          }
-          const headers: Record<string, string> = { Authorization: `Bearer ${effectiveToken}` }
-          await authClient.post('/api/auth/oauth/exchange', { provider: data.provider, code: data.code, state: data.state }, headers)
-          toast({
-            title: "Success",
-            description: `${data.provider} connected successfully!`,
-          })
-          
-          // Auto-register data source for specific providers, exclude git and file storage
-          const noAutoSyncProviders = ['github', 'gitlab', 'bitbucket', 'google_drive', 'google', 'onedrive', 'windowslive'];
-          if (!noAutoSyncProviders.includes(data.provider)) {
-            try {
-              const platformName = PLATFORM_CONFIGS[data.provider as keyof typeof PLATFORM_CONFIGS]?.name || data.provider;
-              await docDataClient.post('/api/sources', {
-                type: data.provider,
-                name: `${platformName} Connection`,
-                uri: `oauth://${data.provider}`,
-              }, headers);
-              console.log(`[registerDataSource] Successfully registered ${data.provider} source for data streaming`);
-            } catch (err) {
-              console.error(`[registerDataSource] Failed to register source for ${data.provider}:`, err);
-            }
-          }
-
-          // Refresh connections in-place (no skeleton) and update global state
-          fetchConnections({ overrideToken: effectiveToken })
-          if (refreshConnections) refreshConnections()
-        } catch (error: any) {
-          console.error('OAuth exchange error:', error)
-          const errorMsg = error?.message || `Failed to connect ${data.provider}`
-
-          // Provide specific guidance for common OAuth errors
-          if (errorMsg.includes('bad_verification_code') || errorMsg.includes('incorrect or expired')) {
-            toast({
-              title: "Authorization Expired",
-              description: "The GitHub authorization code has expired. Please click Connect again to restart.",
-              variant: "destructive"
-            })
-          } else if (errorMsg.includes('redirect_uri_mismatch')) {
-            toast({
-              title: "Configuration Error",
-              description: "OAuth callback URL mismatch. Please check the GitHub OAuth app settings.",
-              variant: "destructive"
-            })
-          } else {
-            toast({
-              title: "Error",
-              description: errorMsg,
-              variant: "destructive"
-            });
-          }
-        }
-      } else if (data.type === 'oauth-error' && data.error) {
+      // The BFF callback has already exchanged the code server-side; this is
+      // the popup reporting the outcome so the opener can refresh in place.
+      fetchConnections()
+      if (refreshConnections) refreshConnections()
+      const platformName = PLATFORM_CONFIGS[data.provider as keyof typeof PLATFORM_CONFIGS]?.name || data.provider || 'Account'
+      if (data.status === 'connected') {
         toast({
-          title: "Error",
-          description: data.error,
-          variant: "destructive"
-        });
-      }
-    }; // End of handler
-
-    // Add storage event handler for when window.opener is lost (e.g. COOP headers from Microsoft)
-    const storageHandler = async (e: StorageEvent) => {
-      if (e.key === 'oauth_callback_data' && e.newValue) {
-        try {
-          const data = JSON.parse(e.newValue);
-          // Only process recent codes (within 30 seconds)
-          if (data && data.type && (Date.now() - (data.ts || 0) < 30000)) {
-            await handler({ data } as MessageEvent);
-            localStorage.removeItem('oauth_callback_data');
-          }
-        } catch (err) {
-          console.error('Error parsing oauth_callback_data', err);
-        }
+          title: 'Success',
+          description: `${platformName} connected successfully!`,
+        })
+      } else {
+        toast({
+          title: 'Error',
+          description: data.error || `Failed to connect ${platformName}`,
+          variant: 'destructive',
+        })
       }
     };
 
     window.addEventListener('message', handler)
-    window.addEventListener('storage', storageHandler)
     return () => {
       window.removeEventListener('message', handler)
-      window.removeEventListener('storage', storageHandler)
     }
   }, [fetchConnections, toast]);
+
+  // When this page is the OAuth popup landing (the BFF callback redirected
+  // here after exchanging the code server-side), report the outcome to the
+  // opener and close; without an opener, surface it on this page instead.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const connected = params.get('connected')
+    const errorParam = params.get('error')
+    if (!connected && !errorParam) return
+
+    const provider = connected || params.get('provider') || ''
+    const platformName = PLATFORM_CONFIGS[provider as keyof typeof PLATFORM_CONFIGS]?.name || provider || 'Account'
+    // Strip the params so a reload does not re-report the same result.
+    window.history.replaceState({}, '', window.location.pathname)
+
+    if (window.opener && !window.opener.closed) {
+      window.opener.postMessage(
+        {
+          type: 'oauth-result',
+          provider,
+          status: connected ? 'connected' : 'error',
+          error: errorParam || undefined,
+        },
+        window.location.origin
+      )
+      window.close()
+      return
+    }
+    if (connected) {
+      toast({
+        title: 'Success',
+        description: `${platformName} connected successfully!`,
+      })
+    } else {
+      toast({
+        title: 'Error',
+        description: errorParam || `Failed to connect ${platformName}`,
+        variant: 'destructive',
+      })
+    }
+  }, [toast]);
+
+  // Fallback when the popup channel is unavailable (e.g. the opener reference
+  // was severed): refresh the list when this window regains focus.
+  useEffect(() => {
+    const refetch = () => {
+      if (document.visibilityState === 'visible') fetchConnections()
+    }
+    window.addEventListener('focus', refetch)
+    document.addEventListener('visibilitychange', refetch)
+    return () => {
+      window.removeEventListener('focus', refetch)
+      document.removeEventListener('visibilitychange', refetch)
+    }
+  }, [fetchConnections]);
 
 
 
