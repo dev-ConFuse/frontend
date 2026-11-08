@@ -10,17 +10,23 @@ import { Button } from '@/components/ui/button'
 
 type GraphMode = 'managed' | 'byodb'
 
+interface GraphSetupState {
+  managedGraphExists: boolean
+  byodbConnected: boolean
+}
+
 /**
  * First-run knowledge-graph choice. Graphs are never provisioned at signup:
  * the user decides between a ConFuse-managed graph and BYODB, and only then
- * is anything created. Renders only while the choice is still unmade.
+ * is anything created. The server reports what ALREADY exists (accounts
+ * provisioned before the choice flow own a graph without a stored choice),
+ * so each option is offered at most once: one managed graph AND one BYODB.
  */
 export function GraphSetupCard() {
   const { token } = useAuth()
   const { toast } = useToast()
   const router = useRouter()
-  const [mode, setMode] = useState<GraphMode | null>(null)
-  const [resolved, setResolved] = useState(false)
+  const [state, setState] = useState<GraphSetupState | null>(null)
   const [busy, setBusy] = useState<GraphMode | null>(null)
 
   useEffect(() => {
@@ -33,8 +39,13 @@ export function GraphSetupCard() {
         if (!res.ok) return
         const data = await res.json().catch(() => null)
         if (cancelled) return
-        if (typeof data?.data?.mode === 'string') setMode(data.data.mode as GraphMode)
-        setResolved(true)
+        const d = data?.data
+        if (d && typeof d.managedGraphExists === 'boolean') {
+          setState({
+            managedGraphExists: d.managedGraphExists,
+            byodbConnected: !!d.byodbConnected,
+          })
+        }
       } catch {
         // Not signed in / endpoint unavailable — stay hidden.
       }
@@ -59,7 +70,11 @@ export function GraphSetupCard() {
       const data = await res.json().catch(() => null)
 
       if (res.ok && data?.success) {
-        setMode(next)
+        const d = data?.data
+        setState({
+          managedGraphExists: d?.managedGraphExists ?? next === 'managed',
+          byodbConnected: d?.byodbConnected ?? false,
+        })
         toast({
           title: next === 'managed' ? 'Knowledge graph ready' : 'BYODB selected',
           description:
@@ -87,7 +102,9 @@ export function GraphSetupCard() {
     }
   }
 
-  if (mode || !resolved) return null
+  const showManaged = !state?.managedGraphExists
+  const showByodb = !state?.byodbConnected
+  if (!state || (!showManaged && !showByodb)) return null
 
   return (
     <Card className="border-border bg-card mb-6" data-testid="graph-setup-card">
@@ -101,25 +118,29 @@ export function GraphSetupCard() {
         </p>
       </CardHeader>
       <CardContent className="grid gap-4 sm:grid-cols-2">
-        <Button
-          className="h-20 flex flex-col gap-2 bg-indigo-600 hover:bg-indigo-700 text-white"
-          disabled={busy !== null}
-          onClick={() => void choose('managed')}
-          data-testid="graph-setup-managed"
-        >
-          <Network className="h-5 w-5" />
-          {busy === 'managed' ? 'Creating…' : 'Create ConFuse Graph'}
-        </Button>
-        <Button
-          variant="outline"
-          className="h-20 flex flex-col gap-2 border-border text-foreground hover:bg-muted"
-          disabled={busy !== null}
-          onClick={() => void choose('byodb')}
-          data-testid="graph-setup-byodb"
-        >
-          <Database className="h-5 w-5" />
-          {busy === 'byodb' ? 'Saving…' : 'Use My Own Database (BYODB)'}
-        </Button>
+        {showManaged && (
+          <Button
+            className="h-20 flex flex-col gap-2 bg-indigo-600 hover:bg-indigo-700 text-white"
+            disabled={busy !== null}
+            onClick={() => void choose('managed')}
+            data-testid="graph-setup-managed"
+          >
+            <Network className="h-5 w-5" />
+            {busy === 'managed' ? 'Creating…' : 'Create ConFuse Graph'}
+          </Button>
+        )}
+        {showByodb && (
+          <Button
+            variant="outline"
+            className="h-20 flex flex-col gap-2 border-border text-foreground hover:bg-muted"
+            disabled={busy !== null}
+            onClick={() => void choose('byodb')}
+            data-testid="graph-setup-byodb"
+          >
+            <Database className="h-5 w-5" />
+            {busy === 'byodb' ? 'Saving…' : 'Use My Own Database (BYODB)'}
+          </Button>
+        )}
       </CardContent>
     </Card>
   )
