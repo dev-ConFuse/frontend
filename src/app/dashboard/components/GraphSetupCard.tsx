@@ -22,7 +22,12 @@ interface GraphSetupState {
  * provisioned before the choice flow own a graph without a stored choice),
  * so each option is offered at most once: one managed graph AND one BYODB.
  */
-export function GraphSetupCard() {
+interface GraphSetupCardProps {
+  /** Switch the dashboard to its BYODB tab instead of navigating away. */
+  onByodbSelected?: () => void
+}
+
+export function GraphSetupCard({ onByodbSelected }: GraphSetupCardProps) {
   const { token } = useAuth()
   const { toast } = useToast()
   const router = useRouter()
@@ -82,7 +87,16 @@ export function GraphSetupCard() {
               ? 'Your ConFuse-managed graph has been created.'
               : 'Connect your own database to start indexing.',
         })
-        if (next === 'byodb') router.push('/byodb')
+        if (next === 'byodb') {
+          // Dashboard hosts BYODB as a tab — prefer in-page switching so the
+          // user keeps their workspace context; the standalone route remains
+          // only as a deep-link fallback.
+          if (onByodbSelected) {
+            onByodbSelected()
+          } else {
+            router.push('/byodb')
+          }
+        }
         return
       }
 

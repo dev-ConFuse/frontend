@@ -10,6 +10,7 @@ import dynamic from 'next/dynamic';
 const Footer = dynamic(() => import("@/components/layout/footer").then(mod => mod.Footer));
 import { AuthGuard } from "@/app/auth/components/AuthGuard";
 import { GraphSetupCard } from "@/app/dashboard/components/GraphSetupCard";
+import { ByodbPanel } from "@/app/byodb/components/ByodbPanel";
 import { getSources, deleteUrl, deleteRepository, authClient, getDashboardStats, getRepositories } from "@/lib/api";
 import { useToggles } from "@/contexts/toggle";
 import { useToast } from "@/hooks/use-toast";
@@ -102,7 +103,7 @@ export default function Dashboard() {
   const [recentSources, setRecentSources] = useState<SourceItem[]>([]);
   const initialLoading = loading || !togglesReady;
   const [recentAgents, setRecentAgents] = useState<AgentItem[]>([]);
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState("home");
   const { toast } = useToast();
   const router = useRouter();
   const { user, isAuthenticated } = useAuth();
@@ -232,15 +233,16 @@ export default function Dashboard() {
           <div className="border-b border-border bg-card">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <TabsList className="bg-transparent h-12 p-0 rounded-none w-full justify-start border-none mt-2">
-                <TabsTrigger value="overview" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-6 h-12 text-sm font-medium text-muted-foreground hover:text-foreground data-[state=active]:text-primary transition-colors duration-200">Overview</TabsTrigger>
+                <TabsTrigger value="home" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-6 h-12 text-sm font-medium text-muted-foreground hover:text-foreground data-[state=active]:text-primary transition-colors duration-200">Home</TabsTrigger>
+                <TabsTrigger value="byodb" data-testid="byodb-tab" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-6 h-12 text-sm font-medium text-muted-foreground hover:text-foreground data-[state=active]:text-primary transition-colors duration-200">BYODB</TabsTrigger>
                 <TabsTrigger value="agents" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-6 h-12 text-sm font-medium text-muted-foreground hover:text-foreground data-[state=active]:text-primary transition-colors duration-200">Config</TabsTrigger>
               </TabsList>
             </div>
           </div>
 
-          <TabsContent value="overview" className="m-0 border-none outline-none">
+          <TabsContent value="home" className="m-0 border-none outline-none">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-              <GraphSetupCard />
+              <GraphSetupCard onByodbSelected={() => setActiveTab("byodb")} />
               <div className="grid lg:grid-cols-2 gap-12 mb-8">
                 <div>
                   <h2 className="text-2xl font-semibold mb-6 text-foreground">Quick Actions</h2>
@@ -314,6 +316,7 @@ export default function Dashboard() {
                         },
                         {
                           href: "/byodb",
+                          tab: "byodb",
                           icon: Database,
                           label: "BYODB",
                           buttonText: "Connect",
@@ -336,14 +339,27 @@ export default function Dashboard() {
                               </div>
                               <span className="font-semibold text-foreground">{action.label}</span>
                             </div>
-                            <Link prefetch={false} href={action.href} className="w-full">
-                              {/* Fixed (non-token) colors: identical in dark and
-                                  light mode — these CTAs are the one place the
-                                  dashboard deliberately opts out of theming. */}
-                              <Button className={`w-full text-white transition-colors ${action.btnColor}`}>
+                            {action.tab ? (
+                              /* BYODB lives in the dashboard tabs — switch in
+                                 place instead of navigating to a separate page. */
+                              <Button
+                                className={`w-full text-white transition-colors ${action.btnColor}`}
+                                onClick={() => {
+                                  if (action.tab) setActiveTab(action.tab);
+                                }}
+                              >
                                 {action.buttonText}
                               </Button>
-                            </Link>
+                            ) : (
+                              <Link prefetch={false} href={action.href} className="w-full">
+                                {/* Fixed (non-token) colors: identical in dark and
+                                    light mode — these CTAs are the one place the
+                                    dashboard deliberately opts out of theming. */}
+                                <Button className={`w-full text-white transition-colors ${action.btnColor}`}>
+                                  {action.buttonText}
+                                </Button>
+                              </Link>
+                            )}
                           </CardContent>
                         </Card>
                       )))}
@@ -644,6 +660,12 @@ export default function Dashboard() {
                   </CardContent>
                 </Card>
               </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="byodb" className="m-0 border-none outline-none">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+              <ByodbPanel />
             </div>
           </TabsContent>
 
