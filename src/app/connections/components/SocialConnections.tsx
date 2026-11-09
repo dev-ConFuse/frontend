@@ -264,7 +264,22 @@ export function SocialConnections() {
       // ----------------------------------------------------------------
       if (platform === 'github' || platform === 'gitlab' || platform === 'bitbucket' || platform === 'slack' || platform === 'notion' || platform === 'onedrive' || platform === 'dropbox' || platform === 'figma' || platform === 'zeplin') {
         const effectiveToken = token || localStorage.getItem('confuse_auth_token') || '';
-        const headers: Record<string, string> = effectiveToken ? { Authorization: `Bearer ${effectiveToken}` } : {};
+        if (!effectiveToken) {
+          toast({
+            title: 'Sign in required',
+            description: 'Please sign in before connecting an account.',
+            variant: 'destructive',
+          });
+          return;
+        }
+        // The token-exchange hop (provider → /api/auth/oauth/callback) sees
+        // only cookies, so re-assert the session cookie from the live token
+        // right before opening the popup — the flow must not depend on the
+        // cookie still being alive from login time. Same attributes as
+        // AuthProvider.saveSession (SameSite=Lax so it rides the provider's
+        // top-level redirect back).
+        document.cookie = `auth_token=${effectiveToken}; path=/; max-age=7200; SameSite=Lax`;
+        const headers: Record<string, string> = { Authorization: `Bearer ${effectiveToken}` };
 
         let url = `/api/auth/oauth/url?provider=${platform}`;
         if (emailHint) {

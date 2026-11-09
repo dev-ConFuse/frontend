@@ -40,6 +40,23 @@ function authBaseUrl(): string {
   return url
 }
 
+/**
+ * Canonical app origin for post-exchange redirects (env-only config — see
+ * .cline/rules/env-policy.md).
+ *
+ * WHY not `request.url`: the request-derived host is unreliable behind the
+ * container port publish — it has surfaced as the server bind address
+ * (0.0.0.0), which browsers refuse to navigate to (ERR_ADDRESS_INVALID).
+ * NEXT_PUBLIC_APP_URL is the one origin users actually browse, per environment.
+ */
+function appOrigin(): string {
+  const url = process.env.NEXT_PUBLIC_APP_URL
+  if (!url) {
+    throw new Error('Missing required environment variable: NEXT_PUBLIC_APP_URL')
+  }
+  return new URL(url).origin
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const code = searchParams.get('code')
@@ -52,7 +69,7 @@ export async function GET(request: NextRequest) {
   const redirectWith = (params: Record<string, string>) => {
     // /connections is the real connectors surface — there is no /connectors
     // route (it 404s, which broke every completed provider OAuth flow).
-    const target = new URL('/connections', request.url)
+    const target = new URL('/connections', appOrigin())
     for (const [key, value] of Object.entries(params)) {
       target.searchParams.set(key, value)
     }

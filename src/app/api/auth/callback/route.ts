@@ -1,6 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { logServerEvent } from '@/lib/server-logger'
 
+/**
+ * Canonical app origin for post-login redirects (env-only config — see
+ * .cline/rules/env-policy.md).
+ *
+ * WHY not `request.url`: the request-derived host is unreliable behind the
+ * container port publish — it has surfaced as the server bind address
+ * (0.0.0.0), which browsers refuse to navigate to (ERR_ADDRESS_INVALID).
+ * NEXT_PUBLIC_APP_URL is the one origin users actually browse, per environment.
+ */
+function appOrigin(): string {
+  const url = process.env.NEXT_PUBLIC_APP_URL
+  if (!url) {
+    throw new Error('Missing required environment variable: NEXT_PUBLIC_APP_URL')
+  }
+  return new URL(url).origin
+}
+
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
   const code = searchParams.get('code')
@@ -15,7 +32,7 @@ export async function GET(request: NextRequest) {
   })
 
   // Redirect to page callback with the same parameters
-  const redirectUrl = new URL('/auth/callback', request.url)
+  const redirectUrl = new URL('/auth/callback', appOrigin())
 
   if (code) {
     redirectUrl.searchParams.set('code', code)

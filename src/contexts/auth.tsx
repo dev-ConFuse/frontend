@@ -130,6 +130,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (session) {
       session.last_activity = new Date().toISOString()
       localStorage.setItem('auth_session', JSON.stringify(session))
+      // Keep the auth_token cookie in lockstep with the localStorage session.
+      // The provider-OAuth callback BFF authenticates the token exchange via
+      // this cookie alone (browser navigations carry cookies, not
+      // localStorage); it was only ever written at login, so a restored or
+      // long-lived session outlived it and the flow died with
+      // "Not authenticated". Same attributes as saveSession.
+      document.cookie = `auth_token=${session.token}; path=/; max-age=7200; SameSite=Lax`
     }
   }, [])
 
