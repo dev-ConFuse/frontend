@@ -25,10 +25,8 @@ export default function AuthCallbackPage() {
     // Context will handle the redirect once fully authenticated and synced.
     // If we land here and aren't loading, but also aren't authenticated, the user probably went directly to the callback URL.
     if (!sdkLoading && !contextLoading && !isAuthenticated && !error) {
-      console.log('⚠️ Not authenticated on callback page, redirecting to login...')
       router.push('/auth/login')
     } else if (!sdkLoading && !contextLoading && isAuthenticated && !error) {
-      console.log('✅ Authenticated on callback page, redirecting to dashboard...')
       router.push('/dashboard')
     }
   }, [isAuthenticated, contextLoading, sdkLoading, auth0Error, error, router])

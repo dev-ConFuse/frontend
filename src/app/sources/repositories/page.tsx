@@ -84,7 +84,6 @@ export default function RepositoriesPage() {
       if (user?.id) headers['x-user-id'] = user.id;
 
       const resp = await repoDataClient.get<ApiResponse<{ repositories: Repository[] }>>('/api/repositories', headers);
-      console.log('[fetchRepositories] API response:', resp);
       if (resp.success && resp.data?.repositories) {
         const uniqueRepos: Repository[] = [];
         const seenUrls = new Set<string>();
@@ -98,7 +97,6 @@ export default function RepositoriesPage() {
         }
         setRepositories(uniqueRepos);
       } else {
-        console.log('[fetchRepositories] Conditions failed:', { success: resp.success, hasData: !!resp.data, hasRepos: !!resp.data?.repositories });
         // If no repositories found, show empty state
         setRepositories([]);
       }
@@ -146,14 +144,10 @@ export default function RepositoriesPage() {
   const deleteRepository = async () => {
     if (!selectedRepoId) return;
     try {
-      console.log(`Deleting repository ${selectedRepoId}`);
-
       const tokenHeader: Record<string, string> = {};
       if (token) tokenHeader['Authorization'] = `Bearer ${token}`;
       if (user?.id) tokenHeader['x-user-id'] = user.id;
       const resp = await repoDataClient.delete<ApiResponse>(`/api/repositories/${selectedRepoId}`, tokenHeader);
-
-      console.log('Delete response:', resp);
 
       if (resp.success) {
         // Update local state immediately for better UX

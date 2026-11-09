@@ -19,9 +19,7 @@ export function ToggleProvider({ children }: { children: React.ReactNode }) {
 
   const refreshToggles = async () => {
     try {
-      console.log('[ToggleProvider] Fetching toggles...');
       const response = await getAllToggles();
-      console.log('[ToggleProvider] Response:', response);
       if (response && response.success) {
         const tData = response.data || {};
         const normalized: ToggleState = {};
@@ -43,7 +41,6 @@ export function ToggleProvider({ children }: { children: React.ReactNode }) {
             }
           });
         }
-        console.log('[ToggleProvider] Normalized toggles:', normalized);
         setToggles(normalized);
       }
     } catch (error) {

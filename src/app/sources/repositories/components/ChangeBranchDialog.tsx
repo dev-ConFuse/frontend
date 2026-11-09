@@ -70,18 +70,14 @@ export function ChangeBranchDialog({
 
     setLoading(true);
     try {
-      console.log(`Changing branch for repo ${repositoryId} to ${selectedBranch}`);
-
       const tokenHeader: Record<string, string> = {};
       if (token) tokenHeader['Authorization'] = `Bearer ${token}`;
       if (user?.id) tokenHeader['x-user-id'] = user.id;
-      const resp = await repoDataClient.patch<ApiResponse>(
+      await repoDataClient.patch<ApiResponse>(
         `/api/repositories/${repositoryId}`,
         { branch: selectedBranch },
         tokenHeader
       );
-
-      console.log('Change branch response:', resp);
 
       onSuccess();
       onOpenChange(false);

@@ -247,7 +247,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       // Call ConFuse auth service to sync user
       const authServiceUrl = process.env.NEXT_PUBLIC_AUTH_URL as string
-      console.log('Calling auth service at:', authServiceUrl)
 
       const response = await fetch(`${authServiceUrl}/api/auth/login`, {
         method: 'POST',
@@ -256,8 +255,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           'Content-Type': 'application/json'
         }
       })
-
-      console.log('Auth service response status:', response.status)
 
       if (!response.ok) {
         const error = await response.json()
@@ -483,8 +480,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [clearSession, auth0IsAuthenticated, auth0Logout, auth0LogoutRedirectUri, router])
 
   const loginWithRedirect = useCallback(async (provider?: string) => {
-    console.log('🔐 loginWithRedirect called with provider:', provider)
-
     await auth0LoginWithRedirect({
       authorizationParams: {
         ...(provider ? { connection: provider } : {}),

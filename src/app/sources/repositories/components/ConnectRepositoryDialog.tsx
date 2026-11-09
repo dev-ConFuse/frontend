@@ -234,11 +234,6 @@ export function ConnectRepositoryDialog({ open, onOpenChange, onSuccess, current
   };
 
   const handleFetchBranches = async () => {
-    console.log('[FRONTEND] handleFetchBranches called');
-    console.log('[FRONTEND] repositoryUrl:', repositoryUrl);
-    console.log('[FRONTEND] provider:', provider);
-    console.log('[FRONTEND] isProviderSelected:', isProviderSelected);
-
     if (!repositoryUrl || !isProviderSelected) {
       setFetchBranchesError("Please enter a repository URL and select a provider first.");
       return;
@@ -248,8 +243,6 @@ export function ConnectRepositoryDialog({ open, onOpenChange, onSuccess, current
       setFetchBranchesError("Please enter a valid repository URL.");
       return;
     }
-
-    console.log('[FRONTEND] credentials:', credentials);
 
     setIsFetchingBranches(true);
     setFetchBranchesError(null);
@@ -405,7 +398,6 @@ export function ConnectRepositoryDialog({ open, onOpenChange, onSuccess, current
 
       const resp = await repoDataClient.post<any>('/api/repositories', payload, headers);
       if (resp && (resp.id || resp.success || resp.data?.id)) {
-        console.log('[ConnectRepo] Connection successful, backend started indexing');
         onSuccess();
         onOpenChange(false);
         resetForm();

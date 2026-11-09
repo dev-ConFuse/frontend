@@ -89,12 +89,6 @@ export function SocialConnections() {
       authData.forEach((conn: any) => connectionMap.set(conn.platform, conn));
 
       const merged = Array.from(connectionMap.values());
-      console.log('[SocialConnections] fetched connections', {
-        tokenPresent: !!effectiveToken,
-        tokenSource: options?.overrideToken ? 'override' : 'closure',
-        authData,
-        merged,
-      });
 
       setConnections(merged);
     } catch (error) {
@@ -228,11 +222,9 @@ export function SocialConnections() {
           authorizationParams
         });
 
-        console.log('[connectPlatform] loginWithPopup completed, syncing connections...');
         const effectiveToken = token || localStorage.getItem('confuse_auth_token') || '';
         const headers: Record<string, string> = effectiveToken ? { Authorization: `Bearer ${effectiveToken}` } : {};
-        const syncResp = await authClient.post(`/api/auth/connections/sync`, { targetProvider: connectionName }, headers);
-        console.log('[connectPlatform] sync response:', JSON.stringify(syncResp));
+        await authClient.post(`/api/auth/connections/sync`, { targetProvider: connectionName }, headers);
 
         await fetchConnections({ overrideToken: effectiveToken });
         if (refreshConnections) refreshConnections();
@@ -250,7 +242,6 @@ export function SocialConnections() {
             name: `${platformName} Connection`,
             uri: `oauth://${platform}`,
           }, headers);
-          console.log(`[registerDataSource] Successfully registered ${platform} source for data streaming`);
         } catch (err) {
           console.error(`[registerDataSource] Failed to register source for ${platform}:`, err);
         }
@@ -346,7 +337,6 @@ export function SocialConnections() {
             uri: `custom://${appName.toLowerCase().replace(/\s+/g, '-')}`,
             credentials: { access_token: apiToken },
           }, headers);
-          console.log(`[registerDataSource] Successfully registered custom app source for data streaming`);
         } catch (err) {
           console.error(`[registerDataSource] Failed to register source for custom app:`, err);
         }
