@@ -86,6 +86,34 @@ const TrustmaryWidget = () => {
   return <div ref={containerRef} className="flex justify-center items-center py-6" />;
 };
 
+/** Static MCP config snippet with light syntax colouring (readable in light + dark). */
+function JsonCode({ json, accentClass, tintClass }: { json: string; accentClass: string; tintClass: string }) {
+  const tokens = json.split(/("(?:[^"\\]|\\.)*"\s*:|"(?:[^"\\]|\\.)*"|[{}\[\],:]|\s+)/g);
+  return (
+    <pre className={`rounded-xl border border-border/60 p-5 text-sm leading-relaxed font-mono whitespace-pre-wrap break-all min-h-[200px] ${tintClass}`}>
+      <code>
+        {tokens.map((tok, i) => {
+          if (!tok) return null;
+          if (tok.startsWith('"') && tok.trimEnd().endsWith(":")) {
+            return <span key={i} className={accentClass}>{tok}</span>;
+          }
+          if (tok.startsWith('"')) {
+            return (
+              <span
+                key={i}
+                className={/^"https?:/.test(tok) ? "text-sky-600 dark:text-sky-400" : "text-emerald-600 dark:text-emerald-400"}
+              >
+                {tok}
+              </span>
+            );
+          }
+          return <span key={i} className="text-muted-foreground">{tok}</span>;
+        })}
+      </code>
+    </pre>
+  );
+}
+
 export default function Dashboard() {
   const [stats, setStats] = useState<DashboardStats>({
     repositories: 0,
@@ -207,6 +235,42 @@ export default function Dashboard() {
       await navigator.clipboard.writeText(mcpUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+    }
+  };
+
+  const httpConfig = `{
+  "mcpServers": {
+    "ConFuse": {
+      "url": "${mcpUrl}",
+      "type": "http"
+    }
+  }
+}`;
+  const sseConfig = `{
+  "mcpServers": {
+    "ConFuse": {
+      "url": "${mcpUrl}",
+      "type": "sse"
+    }
+  }
+}`;
+  const stdioConfig = `{
+  "mcpServers": {
+    "ConFuse": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "${mcpUrl}"]
+    }
+  }
+}`;
+
+  const [copiedConfig, setCopiedConfig] = useState<string | null>(null);
+  const handleCopyConfig = async (key: string, text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedConfig(key);
+      setTimeout(() => setCopiedConfig(null), 2000);
     } catch (err) {
       console.error("Failed to copy text: ", err);
     }
@@ -650,86 +714,129 @@ export default function Dashboard() {
           <TabsContent value="agents" className="m-0 border-none outline-none flex-1">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
               <div className="w-full">
-                <div className="max-w-3xl mx-auto text-center mb-8">
-                  <h2 className="text-3xl font-bold text-foreground mb-4">Connect Your AI Agent</h2>
+                <div className="max-w-3xl mx-auto text-center mb-10">
+                  <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                    Connect Your{" "}
+                    <span className="bg-gradient-to-r from-indigo-500 via-sky-500 to-violet-500 dark:from-indigo-400 dark:via-sky-400 dark:to-violet-400 bg-clip-text text-transparent">
+                      AI Agent
+                    </span>
+                  </h2>
                   <p className="text-muted-foreground text-lg">
                     ConFuse provides a remote Model Context Protocol (MCP) server. Provide the URL below to your AI agent or IDE (like Cursor or Windsurf) to connect.
                   </p>
                 </div>
 
-                <div className="bg-card border border-border rounded-xl overflow-hidden shadow-sm mb-8">
-                  <div className="flex justify-between items-center px-4 py-3 bg-muted/50 border-b border-border">
-                    <span className="text-sm font-medium text-muted-foreground">Your Secure Connection URL</span>
+                <div className="mb-10 rounded-2xl border-2 border-indigo-500/30 bg-gradient-to-br from-indigo-500/10 via-card to-sky-500/10 shadow-lg shadow-indigo-500/10 dark:shadow-indigo-500/20 overflow-hidden">
+                  <div className="flex justify-between items-center px-5 py-3.5 border-b border-border/60">
+                    <span className="text-sm font-semibold text-foreground">Your Secure Connection URL</span>
                     <Button
-                      variant="ghost"
                       size="sm"
                       onClick={handleCopy}
-                      className="h-8 flex items-center gap-2"
+                      className="h-9 px-4 flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm"
                     >
                       {copied ? (
                         <>
-                          <Check className="w-4 h-4 text-green-500" />
-                          <span className="text-green-500 text-xs">Copied</span>
+                          <Check className="w-4 h-4" />
+                          <span className="text-xs font-medium">Copied</span>
                         </>
                       ) : (
                         <>
                           <Copy className="w-4 h-4" />
-                          <span className="text-xs">Copy</span>
+                          <span className="text-xs font-medium">Copy</span>
                         </>
                       )}
                     </Button>
                   </div>
-                  <div className="p-4 overflow-x-auto">
-                    <pre className="text-sm text-foreground font-mono text-center py-2">
-                      <code>{mcpUrl}</code>
-                    </pre>
+                  <div className="px-5 py-5">
+                    <div className="bg-background/80 border border-border/60 rounded-xl px-4 py-3.5 text-center overflow-x-auto">
+                      <code className="text-sm text-foreground font-mono break-all">{mcpUrl}</code>
+                    </div>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                   {/* Native HTTP Card */}
-                  <div className="border-border bg-card rounded-xl p-6 flex flex-col shadow-sm">
-                    <h4 className="text-foreground font-semibold text-base mb-4">Native (type: http)</h4>
-                    <pre className="flex-1 min-h-[200px] bg-background/80 p-5 rounded-lg text-sm leading-relaxed font-mono whitespace-pre-wrap break-all border border-border/50">
-                      {`{
-  "mcpServers": {
-    "ConFuse": {
-      "url": "${mcpUrl}",
-      "type": "http"
-    }
-  }
-}`}
-                    </pre>
+                  <div className="group flex flex-col rounded-2xl border-2 border-border bg-card shadow-sm transition-all duration-200 hover:shadow-xl hover:shadow-indigo-500/10 hover:border-indigo-400/70 dark:hover:border-indigo-500/60 overflow-hidden">
+                    <div className="h-1.5 w-full bg-gradient-to-r from-indigo-500 to-indigo-400" />
+                    <div className="flex items-center justify-between p-5 pb-3">
+                      <h4 className="text-foreground font-semibold text-base">Native (type: http)</h4>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleCopyConfig("http", httpConfig)}
+                        className="h-8 w-8 p-0 opacity-60 group-hover:opacity-100 transition-opacity"
+                        title="Copy config"
+                      >
+                        {copiedConfig === "http" ? (
+                          <Check className="w-4 h-4 text-green-500" />
+                        ) : (
+                          <Copy className="w-4 h-4 text-muted-foreground" />
+                        )}
+                      </Button>
+                    </div>
+                    <div className="px-5 pb-5 flex-1">
+                      <JsonCode
+                        json={httpConfig}
+                        accentClass="text-indigo-600 dark:text-indigo-400"
+                        tintClass="bg-indigo-50/60 dark:bg-indigo-950/25"
+                      />
+                    </div>
                   </div>
 
                   {/* Native SSE Card */}
-                  <div className="border-border bg-card rounded-xl p-6 flex flex-col shadow-sm">
-                    <h4 className="text-foreground font-semibold text-base mb-4">Native (type: sse)</h4>
-                    <pre className="flex-1 min-h-[200px] bg-background/80 p-5 rounded-lg text-sm leading-relaxed font-mono whitespace-pre-wrap break-all border border-border/50">
-                      {`{
-  "mcpServers": {
-    "ConFuse": {
-      "url": "${mcpUrl}",
-      "type": "sse"
-    }
-  }
-}`}
-                    </pre>
+                  <div className="group flex flex-col rounded-2xl border-2 border-border bg-card shadow-sm transition-all duration-200 hover:shadow-xl hover:shadow-sky-500/10 hover:border-sky-400/70 dark:hover:border-sky-500/60 overflow-hidden">
+                    <div className="h-1.5 w-full bg-gradient-to-r from-sky-500 to-sky-400" />
+                    <div className="flex items-center justify-between p-5 pb-3">
+                      <h4 className="text-foreground font-semibold text-base">Native (type: sse)</h4>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleCopyConfig("sse", sseConfig)}
+                        className="h-8 w-8 p-0 opacity-60 group-hover:opacity-100 transition-opacity"
+                        title="Copy config"
+                      >
+                        {copiedConfig === "sse" ? (
+                          <Check className="w-4 h-4 text-green-500" />
+                        ) : (
+                          <Copy className="w-4 h-4 text-muted-foreground" />
+                        )}
+                      </Button>
+                    </div>
+                    <div className="px-5 pb-5 flex-1">
+                      <JsonCode
+                        json={sseConfig}
+                        accentClass="text-sky-600 dark:text-sky-400"
+                        tintClass="bg-sky-50/60 dark:bg-sky-950/25"
+                      />
+                    </div>
                   </div>
 
                   {/* Stdio Proxy Card */}
-                  <div className="border-border bg-card rounded-xl p-6 flex flex-col shadow-sm">
-                    <h4 className="text-foreground font-semibold text-base mb-4">Stdio Proxy (CLI)</h4>
-                    <pre className="flex-1 min-h-[200px] bg-background/80 p-5 rounded-lg text-sm leading-relaxed font-mono whitespace-pre-wrap break-all border border-border/50">
-                      {`{
-  "mcpServers": {
-    "ConFuse": {
-      "command": "npx",
-      "args": ["-y", "mcp-remote", "${mcpUrl}"]
-    }
-  }
-}`}
-                    </pre>
+                  <div className="group flex flex-col rounded-2xl border-2 border-border bg-card shadow-sm transition-all duration-200 hover:shadow-xl hover:shadow-violet-500/10 hover:border-violet-400/70 dark:hover:border-violet-500/60 overflow-hidden">
+                    <div className="h-1.5 w-full bg-gradient-to-r from-violet-500 to-violet-400" />
+                    <div className="flex items-center justify-between p-5 pb-3">
+                      <h4 className="text-foreground font-semibold text-base">Stdio Proxy (CLI)</h4>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleCopyConfig("stdio", stdioConfig)}
+                        className="h-8 w-8 p-0 opacity-60 group-hover:opacity-100 transition-opacity"
+                        title="Copy config"
+                      >
+                        {copiedConfig === "stdio" ? (
+                          <Check className="w-4 h-4 text-green-500" />
+                        ) : (
+                          <Copy className="w-4 h-4 text-muted-foreground" />
+                        )}
+                      </Button>
+                    </div>
+                    <div className="px-5 pb-5 flex-1">
+                      <JsonCode
+                        json={stdioConfig}
+                        accentClass="text-violet-600 dark:text-violet-400"
+                        tintClass="bg-violet-50/60 dark:bg-violet-950/25"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
