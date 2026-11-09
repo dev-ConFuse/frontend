@@ -36,7 +36,6 @@ import {
   FileText,
   Link as LinkIcon,
   BookOpen,
-  Database,
   Globe,
   PenTool,
   Terminal
@@ -315,14 +314,6 @@ export default function Dashboard() {
                           btnColor: "bg-violet-600 hover:bg-violet-700"
                         },
                         {
-                          href: "/byodb",
-                          tab: "byodb",
-                          icon: Database,
-                          label: "BYODB",
-                          buttonText: "Connect",
-                          btnColor: "bg-orange-600 hover:bg-orange-700"
-                        },
-                        {
                           toggleId: "agentRules",
                           href: "/agents/rules",
                           icon: Network,
@@ -339,27 +330,14 @@ export default function Dashboard() {
                               </div>
                               <span className="font-semibold text-foreground">{action.label}</span>
                             </div>
-                            {action.tab ? (
-                              /* BYODB lives in the dashboard tabs — switch in
-                                 place instead of navigating to a separate page. */
-                              <Button
-                                className={`w-full text-white transition-colors ${action.btnColor}`}
-                                onClick={() => {
-                                  if (action.tab) setActiveTab(action.tab);
-                                }}
-                              >
+                            <Link prefetch={false} href={action.href} className="w-full">
+                              {/* Fixed (non-token) colors: identical in dark and
+                                  light mode — these CTAs are the one place the
+                                  dashboard deliberately opts out of theming. */}
+                              <Button className={`w-full text-white transition-colors ${action.btnColor}`}>
                                 {action.buttonText}
                               </Button>
-                            ) : (
-                              <Link prefetch={false} href={action.href} className="w-full">
-                                {/* Fixed (non-token) colors: identical in dark and
-                                    light mode — these CTAs are the one place the
-                                    dashboard deliberately opts out of theming. */}
-                                <Button className={`w-full text-white transition-colors ${action.btnColor}`}>
-                                  {action.buttonText}
-                                </Button>
-                              </Link>
-                            )}
+                            </Link>
                           </CardContent>
                         </Card>
                       )))}
@@ -671,8 +649,8 @@ export default function Dashboard() {
 
           <TabsContent value="agents" className="m-0 border-none outline-none flex-1">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
-              <div className="max-w-3xl mx-auto">
-                <div className="text-center mb-8">
+              <div className="w-full">
+                <div className="max-w-3xl mx-auto text-center mb-8">
                   <h2 className="text-3xl font-bold text-foreground mb-4">Connect Your AI Agent</h2>
                   <p className="text-muted-foreground text-lg">
                     ConFuse provides a remote Model Context Protocol (MCP) server. Provide the URL below to your AI agent or IDE (like Cursor or Windsurf) to connect.
