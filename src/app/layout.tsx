@@ -18,11 +18,11 @@ const spaceGrotesk = localFont({
 })
 
 export const metadata: Metadata = {
-  title: 'ConFuse - AI-powered context unification for microservices',
-  description: 'ConFuse is an AI-powered platform that unifies repositories, documentation, and logs for development teams building microservices.',
+  title: 'ConFuse - Context Layer for coding agents',
+  description: 'ConFuse is the Context Layer for coding agents — connecting repositories, documentation, conversations, and logs so every answer is grounded in what your team actually knows.',
   openGraph: {
-    title: 'ConFuse - AI-powered context unification for microservices',
-    description: 'ConFuse is an AI-powered platform that unifies repositories, documentation, and logs for development teams building microservices.',
+    title: 'ConFuse - Context Layer for coding agents',
+    description: 'ConFuse is the Context Layer for coding agents — connecting repositories, documentation, conversations, and logs so every answer is grounded in what your team actually knows.',
     type: 'website',
     url: 'https://www.confuse.site',
     siteName: 'ConFuse',

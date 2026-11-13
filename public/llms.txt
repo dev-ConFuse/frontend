@@ -1,6 +1,6 @@
 # ConFuse
 
-ConFuse is an AI-powered platform that unifies repositories and documentation for development teams building microservices.
+ConFuse is the Context Layer for coding agents — connecting repositories, documentation, conversations, and logs so every answer is grounded in what your team actually knows.
 
 ## Features
 

@@ -5,9 +5,10 @@ description: A plain-language introduction to ConFuse — what it does, who it i
 
 # What is ConFuse?
 
-ConFuse is a knowledge platform for teams. It brings your project's scattered
-knowledge — source code, documentation, design notes, and links — into one
-place, and lets you ask questions about it in plain language.
+ConFuse is the **Context Layer for coding agents** — a knowledge platform for
+teams. It brings your project's scattered knowledge — source code,
+documentation, design notes, and links — into one place, and lets you ask
+questions about it in plain language.
 
 Instead of searching five different systems and reading twenty tabs, you ask a
 question and get an answer that is **grounded in your own material**, with the
@@ -37,7 +38,7 @@ ConFuse is built around the idea that an answer is only useful if you can see
 | **Grounded answers** | Answers are built from your connected material, not from guesswork. |
 | **Visible sources** | Every answer points back to the material it came from. |
 | **Clear gaps** | When the sources do not cover something, the answer says so instead of inventing one. |
-| **AI agent support** | Connect an AI assistant so it answers from your knowledge base rather than from general knowledge. |
+| **Coding agent support** | Connect a coding agent (or any AI assistant) so it answers from your knowledge base rather than from general knowledge. |
 
 ## Who it is for
 

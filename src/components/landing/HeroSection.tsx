@@ -51,14 +51,14 @@ export function HeroSection() {
             className="inline-flex items-center gap-2 border border-border px-3 py-1 text-sm font-medium uppercase tracking-wider text-muted-foreground bg-background/70 animate-[fade-in-up_0.6s_ease-out_both]"
           >
             <span className="h-2 w-2 rounded-full bg-primary animate-[pulse-soft_2.5s_ease-in-out_infinite]" />
-            v1.0.0-beta · Context unification is here
+            v1.0.0-beta · The Context Layer for coding agents is here
           </div>
 
           <div className="space-y-6">
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-[1.08] animate-[fade-in-up_0.7s_ease-out_0.1s_both]">
-              ConFuse: AI-powered{" "}
+              ConFuse:{" "}
               <span className="bg-gradient-to-r from-primary via-purple-700 to-primary bg-[length:200%_auto] bg-clip-text text-transparent animate-[gradient-x_6s_ease_infinite]">
-                context unification
+                Context Layer for coding agents
               </span>
               .
             </h1>

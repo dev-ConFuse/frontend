@@ -9,7 +9,7 @@
 
 ## Overview
 
-Web interface for the ConFuse Knowledge Intelligence Platform:
+Web interface for ConFuse — the Context Layer for coding agents:
 
 - **Dashboard**: System status and metrics
 - **Source Management**: Connect and manage data sources (repositories,
@@ -67,7 +67,7 @@ npm start
 
 ```bash
 # API URLs (defaults point at local service ports)
-REPO_DATA_CON_URL=http://localhost:8081
+REPO_DATA_CON_URL=http://localhost:3031
 DOC_DATA_CON_URL=http://localhost:8081
 AUTH_MIDDLEWARE_URL=http://localhost:3010
 DATA_VENT_URL=http://localhost:3002

@@ -3,7 +3,7 @@ export function StructuredData() {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "ConFuse",
-    "description": "ConFuse is an AI-powered platform that unifies repositories, documentation, and logs for development teams building microservices.",
+    "description": "ConFuse is the Context Layer for coding agents — connecting repositories, documentation, conversations, and logs so every answer is grounded in what your team actually knows.",
     "url": "https://www.confuse.site",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "Web",
@@ -33,7 +33,7 @@ export function StructuredData() {
         "name": "What is ConFuse?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "ConFuse is an AI-powered platform that unifies repositories, documentation, and logs for development teams building microservices."
+          "text": "ConFuse is the Context Layer for coding agents — connecting repositories, documentation, conversations, and logs so every answer is grounded in what your team actually knows."
         }
       },
       {
@@ -41,7 +41,7 @@ export function StructuredData() {
         "name": "How does ConFuse work?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "ConFuse integrates with your existing development tools and repositories, creating a unified knowledge layer that AI agents and developers can query instantly. It uses vector search and graph traversal to provide sub-10ms response times."
+          "text": "ConFuse integrates with your existing development tools and repositories, creating the Context Layer that coding agents and developers can query instantly. It uses vector search and graph traversal to provide sub-10ms response times."
         }
       },
       {

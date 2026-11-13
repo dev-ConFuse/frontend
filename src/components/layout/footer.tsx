@@ -15,7 +15,7 @@ export function Footer() {
         <div className="flex items-center gap-2">
           <span className="text-lg font-bold text-foreground">ConFuse</span>
           <span className="text-sm text-muted-foreground">
-            AI-powered context unification
+            Context Layer for coding agents
           </span>
         </div>
 

@@ -113,7 +113,7 @@ const featureGroups: FeatureGroup[] = [
     id: "interfaces",
     label: "Agent Interface",
     title: "Ask anything. Your agent calls a tool.",
-    subtitle: "ConFuse is built for AI agents: one tool call returns grounded, permission-scoped context.",
+    subtitle: "ConFuse is built for coding agents: one tool call returns grounded, permission-scoped context.",
     features: [
       {
         id: "agent-tool-call",

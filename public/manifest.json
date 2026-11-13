@@ -1,7 +1,7 @@
 {
   "name": "ConFuse",
   "short_name": "ConFuse",
-  "description": "ConFuse is an AI-powered platform that unifies repositories, documentation, and logs for development teams building microservices.",
+  "description": "ConFuse is the Context Layer for coding agents — connecting repositories, documentation, conversations, and logs so every answer is grounded in what your team actually knows.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
