@@ -315,6 +315,91 @@ export const frontendClient = new ApiClient('', 'frontend');
 export const apiClient = docDataClient;
 
 // =============================================================================
+// Logs API (log-data-con sources, log-uni-proc stats + bi-temporal facts)
+// =============================================================================
+
+export type LogProvider = 'aws_cloudwatch' | 'vercel' | 'otlp';
+
+export interface LogSource {
+  id: string;
+  name: string;
+  provider: LogProvider;
+  mode: 'pull' | 'push';
+  status: string;
+  config: Record<string, unknown>;
+  linked_repos: string[];
+  has_credentials: boolean;
+  ingest_url?: string | null;
+  last_sync_at?: string | null;
+  last_error?: string | null;
+  events_ingested: number;
+  created_at: string;
+}
+
+export interface CreateLogSourcePayload {
+  name: string;
+  provider: LogProvider;
+  config: Record<string, unknown>;
+  credentials: Record<string, string>;
+  linked_repos: string[];
+}
+
+export interface CreateLogSourceResult {
+  source: LogSource;
+  /** Shown exactly once (push sources); never retrievable again. */
+  ingest_token?: string | null;
+  setup_instructions: string[];
+}
+
+export interface LogGraphStats {
+  services: number;
+  log_entries: number;
+  error_groups: number;
+  code_links: number;
+  active_facts: number;
+}
+
+/** A Graphiti fact with both temporal axes (world validity + record time). */
+export interface LogFact {
+  uuid: string;
+  relation: string;
+  fact: string;
+  valid_at: string | null;
+  invalid_at: string | null;
+  created_at: string | null;
+  expired_at: string | null;
+}
+
+export async function listLogSources(headers: Record<string, string>) {
+  return logDataClient.get<{ sources: LogSource[] }>('/api/v1/log-sources', headers);
+}
+
+export async function createLogSource(payload: CreateLogSourcePayload, headers: Record<string, string>) {
+  return logDataClient.post<CreateLogSourceResult>('/api/v1/log-sources', payload, headers);
+}
+
+export async function deleteLogSource(id: string, headers: Record<string, string>) {
+  return logDataClient.delete<{ deleted: boolean }>(`/api/v1/log-sources/${encodeURIComponent(id)}`, headers);
+}
+
+export async function syncLogSource(id: string, headers: Record<string, string>) {
+  return logDataClient.post<{ synced: boolean; events: number }>(
+    `/api/v1/log-sources/${encodeURIComponent(id)}/sync`, {}, headers,
+  );
+}
+
+export async function getLogGraphStats(headers: Record<string, string>) {
+  return logUniProcClient.get<LogGraphStats>('/api/v1/stats', headers);
+}
+
+export async function searchLogFacts(
+  body: { query: string; limit?: number; as_of?: string | null; include_invalidated?: boolean },
+  headers: Record<string, string>,
+) {
+  return logUniProcClient.post<{ facts: LogFact[] }>('/api/v1/logs/search', body, headers);
+}
+
+// =============================================================================
 // Data Connector API (agents, documents, URLs, repos, dashboard, sources)
 // =============================================================================
 
