@@ -6,7 +6,7 @@ const fs = require('fs');
 const { Pool } = require('pg');
 
 // Merged dev/build bootstrap for the frontend.
-// Parses .map.env / .secret.env / .env.local, resolves the `enableDeployedUrls`
+// Parses .map.env / .secret.env, resolves the `enableDeployedUrls`
 // DB toggle, merges the result into the Next.js process env and spawns
 // `next dev` (mode dev) or `next build` (mode build).
 // Usage: node start.js <dev|build|start>
@@ -17,24 +17,22 @@ if (mode !== 'dev' && mode !== 'build' && mode !== 'start') {
     process.exit(1);
 }
 
-// Load environment variables from custom files
+// Load environment variables from .map.env (non-secret) and .secret.env (secrets)
+// .secret.env overrides .map.env (loaded second with override)
 const envMapPath = path.resolve(process.cwd(), '.map.env');
-const envLocalPath = path.resolve(process.cwd(), '.env.local');
 const envSecretPath = path.resolve(process.cwd(), '.secret.env');
 
 const mapEnv = fs.existsSync(envMapPath) ? dotenv.parse(fs.readFileSync(envMapPath)) : {};
-const localEnv = fs.existsSync(envLocalPath) ? dotenv.parse(fs.readFileSync(envLocalPath)) : {};
 const secretEnv = fs.existsSync(envSecretPath) ? dotenv.parse(fs.readFileSync(envSecretPath)) : {};
 
 // The toggle lives in the shared PostgreSQL toggles table; when it is
 // unreachable we keep whatever the env files / process env already decided.
 async function resolveUseDeployedUrls() {
     let useDeployedUrls = process.env.USE_DEPLOYED_URLS === 'true' ||
-                          localEnv.USE_DEPLOYED_URLS === 'true' ||
                           secretEnv.USE_DEPLOYED_URLS === 'true' ||
                           mapEnv.USE_DEPLOYED_URLS === 'true';
 
-    const dbUrl = process.env.DATABASE_URL || secretEnv.DATABASE_URL || localEnv.DATABASE_URL || mapEnv.DATABASE_URL;
+    const dbUrl = process.env.DATABASE_URL || secretEnv.DATABASE_URL || mapEnv.DATABASE_URL;
 
     if (dbUrl) {
         const pool = new Pool({ connectionString: dbUrl, ssl: { rejectUnauthorized: false } });
@@ -53,24 +51,23 @@ async function resolveUseDeployedUrls() {
     return useDeployedUrls;
 }
 
-// Deployed URLs live in .map.env, localhost overrides in .env.local;
+// Deployed URLs live in .map.env, localhost overrides in .secret.env;
 // the toggle decides which side of the merge wins.
+// .secret.env always overrides .map.env (loaded last).
 function buildEnv(useDeployedUrls) {
     if (useDeployedUrls) {
         console.log(`🚀 DB Toggle (enableDeployedUrls) is ON: Loading custom environment variables, prioritizing .map.env (deployed URLs)`);
         return {
             ...process.env,
-            ...localEnv,
-            ...secretEnv,
             ...mapEnv,
+            ...secretEnv,
         };
     }
-    console.log(`🚀 DB Toggle (enableDeployedUrls) is OFF: Loading custom environment variables, prioritizing .env.local (localhost URLs)`);
+    console.log(`🚀 DB Toggle (enableDeployedUrls) is OFF: Loading custom environment variables, prioritizing .secret.env (localhost URLs)`);
     return {
         ...process.env,
         ...mapEnv,
         ...secretEnv,
-        ...localEnv,
     };
 }
 
