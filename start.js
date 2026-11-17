@@ -1,3 +1,4 @@
+require('./preload-dns');
 const { spawn } = require('child_process');
 const path = require('path');
 const dotenv = require('dotenv');
@@ -8,11 +9,11 @@ const { Pool } = require('pg');
 // Parses .map.env / .secret.env / .env.local, resolves the `enableDeployedUrls`
 // DB toggle, merges the result into the Next.js process env and spawns
 // `next dev` (mode dev) or `next build` (mode build).
-// Usage: node start.js <dev|build>
+// Usage: node start.js <dev|build|start>
 
-const mode = process.argv[2];
-if (mode !== 'dev' && mode !== 'build') {
-    console.error('Usage: node start.js <dev|build>');
+const mode = process.argv[2] || 'dev';
+if (mode !== 'dev' && mode !== 'build' && mode !== 'start') {
+    console.error('Usage: node start.js <dev|build|start>');
     process.exit(1);
 }
 
@@ -89,17 +90,22 @@ async function main() {
         return;
     }
 
-    const port = mergedEnv.PORT;
-    if (!port) {
-        console.error('PORT must be set in .map.env / .secret.env / .env.local to run the dev server');
-        process.exit(1);
-    }
+    const port = mergedEnv.PORT || 3000;
 
-    const nextProcess = spawn('npx', ['next', 'dev', '-p', port], {
-        stdio: ['inherit', 'pipe', 'pipe'],
-        env: mergedEnv,
-        shell: true
-    });
+    let nextProcess;
+    if (mode === 'start') {
+        nextProcess = spawn('node', ['-r', './preload-dns.js', '.next/standalone/server.js'], {
+            stdio: ['inherit', 'pipe', 'pipe'],
+            env: { ...mergedEnv, PORT: String(port) },
+            shell: true
+        });
+    } else {
+        nextProcess = spawn('npx', ['next', 'dev', '-p', String(port)], {
+            stdio: ['inherit', 'pipe', 'pipe'],
+            env: { ...mergedEnv, NODE_OPTIONS: `${mergedEnv.NODE_OPTIONS || ''} --require ./preload-dns.js`.trim() },
+            shell: true
+        });
+    }
 
     const sanitizeLog = (data) => {
         let str = data.toString();

@@ -57,6 +57,16 @@ export const ENDPOINTS = {
   settings: '/api/settings',
 } as const;
 
+export const NEON_CONFIG = {
+  databaseUrl: process.env.DATABASE_URL,
+  databaseUrlUnpooled: process.env.DATABASE_URL_UNPOOLED,
+  aiGatewayBaseUrl: process.env.NEON_AI_GATEWAY_BASE_URL,
+  aiGatewayToken: process.env.NEON_AI_GATEWAY_TOKEN,
+  functionHostSuffix: process.env.NEON_FUNCTION_HOST_SUFFIX,
+  branch: process.env.NEON_BRANCH,
+  branchId: process.env.NEON_BRANCH_ID,
+} as const;
+
 
 if (typeof window !== 'undefined') {
   const isValidUrl = (url: string) => {
