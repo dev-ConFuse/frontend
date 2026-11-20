@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button'
 type GraphMode = 'managed' | 'byodb'
 
 interface GraphSetupState {
+  mode?: string | null
   managedGraphExists: boolean
   byodbConnected: boolean
 }
@@ -47,6 +48,7 @@ export function GraphSetupCard({ onByodbSelected }: GraphSetupCardProps) {
         const d = data?.data
         if (d && typeof d.managedGraphExists === 'boolean') {
           setState({
+            mode: d.mode ?? null,
             managedGraphExists: d.managedGraphExists,
             byodbConnected: !!d.byodbConnected,
           })
@@ -77,16 +79,16 @@ export function GraphSetupCard({ onByodbSelected }: GraphSetupCardProps) {
       if (res.ok && data?.success) {
         const d = data?.data
         setState({
+          mode: d?.mode ?? next,
           managedGraphExists: d?.managedGraphExists ?? next === 'managed',
           byodbConnected: d?.byodbConnected ?? false,
         })
-        toast({
-          title: next === 'managed' ? 'Knowledge graph ready' : 'BYODB selected',
-          description:
-            next === 'managed'
-              ? 'Your ConFuse-managed graph has been created.'
-              : 'Connect your own database to start indexing.',
-        })
+        if (next === 'managed') {
+          toast({
+            title: 'Knowledge graph ready',
+            description: 'Your ConFuse-managed graph has been created.',
+          })
+        }
         if (next === 'byodb') {
           // Dashboard hosts BYODB as a tab — prefer in-page switching so the
           // user keeps their workspace context; the standalone route remains
@@ -116,9 +118,8 @@ export function GraphSetupCard({ onByodbSelected }: GraphSetupCardProps) {
     }
   }
 
-  const showManaged = !state?.managedGraphExists
-  const showByodb = !state?.byodbConnected
-  if (!state || (!showManaged && !showByodb)) return null
+  // Once a mode is chosen, managed graph exists, or BYODB is connected, hide the card immediately
+  if (!state || state.managedGraphExists || state.mode || state.byodbConnected) return null
 
   return (
     <Card className="border-border bg-card mb-6" data-testid="graph-setup-card">
@@ -132,29 +133,25 @@ export function GraphSetupCard({ onByodbSelected }: GraphSetupCardProps) {
         </p>
       </CardHeader>
       <CardContent className="grid gap-4 sm:grid-cols-2">
-        {showManaged && (
-          <Button
-            className="h-20 flex flex-col gap-2 bg-indigo-600 hover:bg-indigo-700 text-white"
-            disabled={busy !== null}
-            onClick={() => void choose('managed')}
-            data-testid="graph-setup-managed"
-          >
-            <Network className="h-5 w-5" />
-            {busy === 'managed' ? 'Creating…' : 'Create ConFuse Graph'}
-          </Button>
-        )}
-        {showByodb && (
-          <Button
-            variant="outline"
-            className="h-20 flex flex-col gap-2 border-border text-foreground hover:bg-muted"
-            disabled={busy !== null}
-            onClick={() => void choose('byodb')}
-            data-testid="graph-setup-byodb"
-          >
-            <Database className="h-5 w-5" />
-            {busy === 'byodb' ? 'Saving…' : 'Use My Own Database (BYODB)'}
-          </Button>
-        )}
+        <Button
+          className="h-20 flex flex-col gap-2 bg-indigo-600 hover:bg-indigo-700 text-white"
+          disabled={busy !== null}
+          onClick={() => void choose('managed')}
+          data-testid="graph-setup-managed"
+        >
+          <Network className="h-5 w-5" />
+          {busy === 'managed' ? 'Creating…' : 'Create ConFuse Graph'}
+        </Button>
+        <Button
+          variant="outline"
+          className="h-20 flex flex-col gap-2 border-border text-foreground hover:bg-muted"
+          disabled={busy !== null}
+          onClick={() => void choose('byodb')}
+          data-testid="graph-setup-byodb"
+        >
+          <Database className="h-5 w-5" />
+          {busy === 'byodb' ? 'Saving…' : 'Use My Own Database (BYODB)'}
+        </Button>
       </CardContent>
     </Card>
   )
