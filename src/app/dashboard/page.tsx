@@ -38,7 +38,8 @@ import {
   BookOpen,
   Globe,
   PenTool,
-  Terminal
+  Terminal,
+  Database
 } from "lucide-react";
 
 interface SourceItem {
@@ -133,7 +134,11 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("home");
   const { toast } = useToast();
   const router = useRouter();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, token } = useAuth();
+
+  // Graph provisioning state
+  const [graphProvisioned, setGraphProvisioned] = useState(false);
+  const [graphProvisioningLoading, setGraphProvisioningLoading] = useState(true);
 
   const fetchData = useCallback(async (isAutoRefresh = false) => {
     if (!isAuthenticated) return;
@@ -144,10 +149,13 @@ export default function Dashboard() {
       }
 
       // Use the centralized dashboard stats API
-      const [dashboardStatsResp, sourcesResp, reposResp] = await Promise.all([
+      const [dashboardStatsResp, sourcesResp, reposResp, graphSetupResp] = await Promise.all([
         getDashboardStats().catch(() => null),
         getSources().catch(() => null),
-        getRepositories().catch(() => null)
+        getRepositories().catch(() => null),
+        fetch('/api/graph/setup', {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        }).then(r => r.ok ? r.json() : null).catch(() => null)
       ]);
 
       if (dashboardStatsResp && dashboardStatsResp.success === false) {
@@ -201,6 +209,14 @@ export default function Dashboard() {
         security_score: dashboardStats.security_score || 98,
         activity: dashboardStats.activity || [],
       });
+
+      // Update graph provisioning state
+      const graphData = graphSetupResp?.data;
+      if (graphData && typeof graphData.managedGraphExists === 'boolean') {
+        const provisioned = graphData.managedGraphExists || !!graphData.byodbConnected;
+        setGraphProvisioned(provisioned);
+      }
+      setGraphProvisioningLoading(false);
 
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
